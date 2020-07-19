@@ -4,6 +4,7 @@ function init() {
 
   //* Game Variables
   let playerPosition = 0; 
+  let timerId = 0
 
 
 
@@ -92,63 +93,131 @@ function init() {
   //* Create new function attached to event listener for 'keyup' events
   function handlePlayerMove(event) {
     // console.log('keyup event function has been triggered')
-    gameGrid[playerPosition].classList.remove('Player')
-
+    // if (timerId) {
+    //   clearInterval(timerId)
+    // }
     switch (event.keyCode) {
       case 39:
-        // console.log('right key has been pressed')
         if (gameGrid[playerPosition + 1].className !== 'barrier') {
-          playerPosition++
+          clearInterval(timerId)
+          timerId = setInterval(() => {
+            if (gameGrid[playerPosition + 1].className !== 'barrier') {
+              gameGrid[playerPosition].classList.remove('Player')
+              playerPosition++
+              gameGrid[playerPosition].classList.add('Player')
+            } else {
+              clearInterval(timerId)
+              return
+            }
+          },500)
+        } else {
+          return
         }
+        // console.log('right key has been pressed')
+        //* Check if another key has been pressed and clear their setInterval actions
+        // timerId = setInterval(() => {
+        //   if (gameGrid[playerPosition + 1].className !== 'barrier') {
+        //     gameGrid[playerPosition].classList.remove('Player')
+        //     playerPosition++
+        //     gameGrid[playerPosition].classList.add('Player')
+        //   } else {
+        //     clearInterval(timerId)
+        //     return
+        //   }
+        // }, 500)
         console.log(playerPosition)
         break
       case 37:
         // console.log('left key has been pressed')
         if (gameGrid[playerPosition - 1].className !== 'barrier') {
-          playerPosition--
+          clearInterval(timerId)
+          timerId = setInterval(() => {
+            if (gameGrid[playerPosition - 1].className !== 'barrier') {
+              gameGrid[playerPosition].classList.remove('Player')
+              playerPosition--
+              gameGrid[playerPosition].classList.add('Player')
+            } else {
+              clearInterval(timerId)
+              return
+            }
+          },500)
+        } else {
+          return
         }
+        // timerId = setInterval(() => {
+        //   if (gameGrid[playerPosition - 1].className !== 'barrier') {
+        //     gameGrid[playerPosition].classList.remove('Player')
+        //     playerPosition--
+        //     gameGrid[playerPosition].classList.add('Player')
+        //   } else {
+        //     clearInterval(timerId)
+        //     return
+        //   }
+        // }, 500)
         console.log(playerPosition)
         break
       case 38:
         // console.log('Up key has been pressed')
         if (gameGrid[playerPosition - width].className !== 'barrier') {
-          playerPosition -= width
+          clearInterval(timerId)
+          timerId = setInterval(() => {
+            if (gameGrid[playerPosition - width].className !== 'barrier') {
+              gameGrid[playerPosition].classList.remove('Player')
+              playerPosition -= width
+              gameGrid[playerPosition].classList.add('Player')
+            } else {
+              clearInterval(timerId)
+              return
+            }
+          },500)
+        } else {
+          return
         }
+        // timerId = setInterval(() => {
+        //   if (gameGrid[playerPosition - width].className !== 'barrier') {
+        //     gameGrid[playerPosition].classList.remove('Player')
+        //     playerPosition -= width
+        //     gameGrid[playerPosition].classList.add('Player')
+        //   } else {
+        //     clearInterval(timerId)
+        //     return
+        //   }
+        // }, 500)
         console.log(playerPosition)
         break
       case 40:
         // console.log('Down key has been pressed')
         if (gameGrid[playerPosition + width].className !== 'barrier') {
-          playerPosition += width
+          clearInterval(timerId)
+          timerId = setInterval(() => {
+            if (gameGrid[playerPosition + width].className !== 'barrier') {
+              gameGrid[playerPosition].classList.remove('Player')
+              playerPosition += width
+              gameGrid[playerPosition].classList.add('Player')
+            } else {
+              clearInterval(timerId)
+              return
+            }
+          },500)
+        } else {
+          return
         }
+        // timerId = setInterval(() => {
+        //   if (gameGrid[playerPosition + width].className !== 'barrier') {
+        //     gameGrid[playerPosition].classList.remove('Player')
+        //     playerPosition += width
+        //     gameGrid[playerPosition].classList.add('Player')
+        //   } else {
+        //     clearInterval(timerId)
+        //     return
+        //   }
+        // }, 500)
         console.log(playerPosition)
         break
       default: 
         console.log('Invalid key')
     }
-    gameGrid[playerPosition].classList.add('Player')
-
-
-
   }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
   //* Add event listener for the player movement function
