@@ -98,6 +98,7 @@ function init() {
     // }
     switch (event.keyCode) {
       case 39:
+        // console.log('right key has been pressed')
         if (gameGrid[playerPosition + 1].className !== 'barrier') {
           clearInterval(timerId)
           timerId = setInterval(() => {
@@ -113,18 +114,6 @@ function init() {
         } else {
           return
         }
-        // console.log('right key has been pressed')
-        //* Check if another key has been pressed and clear their setInterval actions
-        // timerId = setInterval(() => {
-        //   if (gameGrid[playerPosition + 1].className !== 'barrier') {
-        //     gameGrid[playerPosition].classList.remove('Player')
-        //     playerPosition++
-        //     gameGrid[playerPosition].classList.add('Player')
-        //   } else {
-        //     clearInterval(timerId)
-        //     return
-        //   }
-        // }, 500)
         console.log(playerPosition)
         break
       case 37:
@@ -144,16 +133,6 @@ function init() {
         } else {
           return
         }
-        // timerId = setInterval(() => {
-        //   if (gameGrid[playerPosition - 1].className !== 'barrier') {
-        //     gameGrid[playerPosition].classList.remove('Player')
-        //     playerPosition--
-        //     gameGrid[playerPosition].classList.add('Player')
-        //   } else {
-        //     clearInterval(timerId)
-        //     return
-        //   }
-        // }, 500)
         console.log(playerPosition)
         break
       case 38:
@@ -173,16 +152,6 @@ function init() {
         } else {
           return
         }
-        // timerId = setInterval(() => {
-        //   if (gameGrid[playerPosition - width].className !== 'barrier') {
-        //     gameGrid[playerPosition].classList.remove('Player')
-        //     playerPosition -= width
-        //     gameGrid[playerPosition].classList.add('Player')
-        //   } else {
-        //     clearInterval(timerId)
-        //     return
-        //   }
-        // }, 500)
         console.log(playerPosition)
         break
       case 40:
@@ -202,16 +171,6 @@ function init() {
         } else {
           return
         }
-        // timerId = setInterval(() => {
-        //   if (gameGrid[playerPosition + width].className !== 'barrier') {
-        //     gameGrid[playerPosition].classList.remove('Player')
-        //     playerPosition += width
-        //     gameGrid[playerPosition].classList.add('Player')
-        //   } else {
-        //     clearInterval(timerId)
-        //     return
-        //   }
-        // }, 500)
         console.log(playerPosition)
         break
       default: 
