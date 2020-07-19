@@ -2,6 +2,11 @@ function init() {
 
   // console.log('This page has finished loading and JS is hooked')
 
+  //* Game Variables
+  let playerPosition = 0; 
+
+
+
   //?Creating grid
   //* Initialise an empty array to contain the PacMan grid 
   const gameGrid = []
@@ -13,7 +18,7 @@ function init() {
   const gridContainer = document.querySelector('.grid-container')
   // console.log(gridContainer)
 
-  //* Define a layout array, containing a series of numbers that represent the function of the squares (i.e. 0 = food, 1 = barrier, 2 = flashing food, 3 = 'Ghost' lair, 4 = 'Empty')
+  //* Define a layout array, containing a series of numbers that represent the function of the squares (i.e. 0 = food, 1 = barrier, 2 = flashing food, 3 = 'Ghost' lair, 4 = 'Player start')
   const layout = [
     1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,
     1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1,
@@ -68,14 +73,22 @@ function init() {
       } else if (layout[i] === 3) {
         gameGrid[i].classList.add('ghost-lair')
       } else if (layout[i] === 4) {
-        gameGrid[i].classList.add('empty')
+        gameGrid[i].classList.add('Player')
+        playerPosition = i
       }
     }
   }
 
   createGrid()
 
+
+
+  //? Creating movement and movement rules for 'Player'
+  //*Check current position of 'Player'
+  console.log('Currently player is in cell index', playerPosition)
+
   
+
 
 
 
