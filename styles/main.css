@@ -23,8 +23,40 @@ body {
   flex-direction: row;
   flex-wrap: wrap;
   border: 2px solid black;
-  width: 580px;
-  height: 580px;
+  width: 584px;
+  height: 584px;
   margin-top: 10%;
+}
 
+.grid-container div {
+  width: 20px;
+  height: 20px;
+}
+
+//Grid Items & Character classes
+
+.food {
+  background-color: brown;
+  border: 5px solid white;
+}
+
+.barrier {
+  background-color: blue;
+}
+
+.flashing-food {
+  background-color: pink;
+  border-radius: 10px;
+}
+
+.ghost-lair {
+
+}
+
+.Player {
+  background-color: yellow;
+}
+
+.Ghost {
+  background-color: purple;
 }
