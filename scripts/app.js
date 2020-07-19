@@ -86,11 +86,51 @@ function init() {
   //? Creating movement and movement rules for 'Player'
   //*Check current position of 'Player'
   console.log('Currently player is in cell index', playerPosition)
-
-  
-
+  // console.log(gameGrid[playerPosition])
 
 
+  //* Create new function attached to event listener for 'keyup' events
+  function handlePlayerMove(event) {
+    // console.log('keyup event function has been triggered')
+    gameGrid[playerPosition].classList.remove('Player')
+
+    switch (event.keyCode) {
+      case 39:
+        // console.log('right key has been pressed')
+        if (gameGrid[playerPosition + 1].className !== 'barrier') {
+          playerPosition++
+        }
+        console.log(playerPosition)
+        break
+      case 37:
+        // console.log('left key has been pressed')
+        if (gameGrid[playerPosition - 1].className !== 'barrier') {
+          playerPosition--
+        }
+        console.log(playerPosition)
+        break
+      case 38:
+        // console.log('Up key has been pressed')
+        if (gameGrid[playerPosition - width].className !== 'barrier') {
+          playerPosition -= width
+        }
+        console.log(playerPosition)
+        break
+      case 40:
+        // console.log('Down key has been pressed')
+        if (gameGrid[playerPosition + width].className !== 'barrier') {
+          playerPosition += width
+        }
+        console.log(playerPosition)
+        break
+      default: 
+        console.log('Invalid key')
+    }
+    gameGrid[playerPosition].classList.add('Player')
+
+
+
+  }
 
 
 
@@ -106,6 +146,13 @@ function init() {
 
 
 
+
+
+
+
+
+  //* Add event listener for the player movement function
+  document.addEventListener('keydown', handlePlayerMove)
 
 }
 
