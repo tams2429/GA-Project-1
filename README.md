@@ -34,3 +34,5 @@ This repo contains the 1st project (Make a Game) after module 1 of GA SEI Bootca
   2. To check 'gameGrid', use array method, array.filter, to output an array with the class, 'food'
   3. Using array method, array.length, check the length of the array, if length = 0 => that game is won
   4. Display winning alerts
+
+### 
