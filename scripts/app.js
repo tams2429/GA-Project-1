@@ -82,7 +82,7 @@ function init() {
 
   createGrid()
 
-
+//!-----------------------------------------------------------------------------------------
 
   //? Creating movement and movement rules for 'Player'
   //*Check current position of 'Player'
@@ -114,7 +114,7 @@ function init() {
         } else {
           return
         }
-        console.log(playerPosition)
+        // console.log(playerPosition)
         break
       case 37:
         // console.log('left key has been pressed')
@@ -133,7 +133,7 @@ function init() {
         } else {
           return
         }
-        console.log(playerPosition)
+        // console.log(playerPosition)
         break
       case 38:
         // console.log('Up key has been pressed')
@@ -152,7 +152,7 @@ function init() {
         } else {
           return
         }
-        console.log(playerPosition)
+        // console.log(playerPosition)
         break
       case 40:
         // console.log('Down key has been pressed')
@@ -171,16 +171,37 @@ function init() {
         } else {
           return
         }
-        console.log(playerPosition)
+        // console.log(playerPosition)
         break
       default: 
         console.log('Invalid key')
     }
   }
 
-
   //* Add event listener for the player movement function
-  document.addEventListener('keydown', handlePlayerMove)
+  document.addEventListener('keyup', handlePlayerMove)
+
+
+//!-------------------------------------------------------------------------------------------
+
+  //?Behaiour of food
+  //*
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 }
 
