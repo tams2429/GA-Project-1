@@ -39,3 +39,8 @@ This repo contains the 1st project (Make a Game) after module 1 of GA SEI Bootca
 * Add '.Ghost' class to the starting position in the grid array,
 * Add Event Listener (not sure what? maybe attach to same event listener 'keyup' in response to player move) and attach to a new function (i.e. function handleGhostMove()) to govern movement of Ghost based on movement of Player?
 * Initially try to do random movement for ghost by creating an array of possible movement (i.e. [-1, 1, -width, width]) and using 'let movement = array[Math.floor(Math.random() * array.length)]' to select any of the movements, 'if' ('gameGrid[ghostPosition + movement].className !== 'barrier') then remove className 'ghost' from old position, update 'ghostPosition' and add className 'ghost' to new position, (Encapsulate this whole step in a setInterval() method)
+
+### Ghost capturing Player or Player capturing Ghost
+* Create a function, capturePlayer(), that checks if a grid square contains both classes, 'Player-Hunted' and 'Ghost-Hunter' at any one time,
+* Use setInterval() method to check a regular intervals? more regular than movement of player and ghost? and attach function to startGame() to start checking from the start of the game
+
