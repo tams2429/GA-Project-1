@@ -6,6 +6,7 @@ function init() {
   let playerPosition = 0 
   let playerTimerId = 0
   let ghostTimerId = 0
+  let gameTimerId = 0
 
 
 
@@ -114,7 +115,28 @@ function init() {
     }
   }
 
-  createGrid()
+  // createGrid()
+//!-----------------------------------------------------------------------------------------
+  //? Creating a function startGame() which will create the grid and call the 'ghost' movement function
+  //*Game variables
+  //! StartDelay has to be longer than ghostDelay otherwise ghostMove() wont be run as setInterval() will restart ghostMove() before it performs any movement
+  //! Possibly attach startGame() to Event Listener when window.Prompt is pressed? 
+  const startDelay = 500
+  const ghostDelay = 200
+
+  function startGame() {
+    createGrid()
+    gameTimerId = setInterval(ghostMove, startDelay)
+    // if (checkWin() === 0) {
+    //   clearInterval(gameTimerId)
+    // }
+  }
+
+  startGame()
+
+
+
+
 
 //!-----------------------------------------------------------------------------------------
 
@@ -122,7 +144,7 @@ function init() {
 
   //*Game variables 
   //*Time delay constant between each movement (increase speed for higher difficulty?)
-  const timeDelay = 200
+  const playerDelay = 200
 
   //*Check current position of 'Player'
   console.log('Currently player is in cell index', playerPosition)
@@ -154,7 +176,7 @@ function init() {
               clearInterval(playerTimerId)
               return
             }
-          }, timeDelay)
+          }, playerDelay)
         } else {
           return
         }
@@ -175,7 +197,7 @@ function init() {
               clearInterval(playerTimerId)
               return
             }
-          }, timeDelay)
+          }, playerDelay)
         } else {
           return
         }
@@ -196,7 +218,7 @@ function init() {
               clearInterval(playerTimerId)
               return
             }
-          }, timeDelay)
+          }, playerDelay)
         } else {
           return
         }
@@ -217,7 +239,7 @@ function init() {
               clearInterval(playerTimerId)
               return
             }
-          }, timeDelay)
+          }, playerDelay)
         } else {
           return
         }
@@ -226,8 +248,8 @@ function init() {
       default: 
         console.log('Invalid key')
     }
-    const id = setInterval(handleGhostMove, timeDelay)
-    console.log('Id is', id)
+    // const id = setInterval(ghostMove, playerDelay)
+    // console.log('Id is', id)
   }
 
   //* Add event listener for the player movement function
@@ -281,6 +303,7 @@ function init() {
         location.reload()
       }
     }
+    // return foodsRemaining.length
   }
 
 
@@ -308,7 +331,7 @@ function init() {
 
   //* Define Event Listener Function to handle random directional 'Ghost' movements in response to player key being pressed
 
-  function handleGhostMove() {
+  function ghostMove() {
     console.log('Ghost movement event function has been triggered')
     //* Generate random movement from array 'ghostDirections' using Math object library
     let randomDirection = ghostDirections[Math.floor(Math.random() * ghostDirections.length)]
@@ -326,7 +349,7 @@ function init() {
           ghost1Position += randomDirection
           gameGrid[ghost1Position].classList.add('Ghost')
         }
-      }, timeDelay)
+      }, ghostDelay)
     } else {
       return
     }
@@ -345,8 +368,6 @@ function init() {
 
 
 
-  //* Adding event listener for the 'Ghost' movement function
-  // document.addEventListener('keyup', handleGhostMove)
 
 
 
