@@ -3,8 +3,9 @@ function init() {
   // console.log('This page has finished loading and JS is hooked')
 
   //* Game Variables
-  let playerPosition = 0; 
-  let timerId = 0
+  let playerPosition = 0 
+  let playerTimerId = 0
+  let ghostTimerId = 0
 
 
 
@@ -131,15 +132,18 @@ function init() {
   //* Create new function attached to event listener for 'keyup' events
   function handlePlayerMove(event) {
     // console.log('keyup event function has been triggered')
-    // if (timerId) {
-    //   clearInterval(timerId)
+    // if (playerTimerId) {
+    //   clearInterval(playerTimerId)
     // }
+    
+
+
     switch (event.keyCode) {
       case 39:
         // console.log('right key has been pressed')
         if (gameGrid[playerPosition + 1].className !== 'barrier') {
-          clearInterval(timerId)
-          timerId = setInterval(() => {
+          clearInterval(playerTimerId)
+          playerTimerId = setInterval(() => {
             if (gameGrid[playerPosition + 1].className !== 'barrier') {
               gameGrid[playerPosition].classList.remove('Player')
               playerPosition++
@@ -147,7 +151,7 @@ function init() {
               foodsEaten()
               checkWin()
             } else {
-              clearInterval(timerId)
+              clearInterval(playerTimerId)
               return
             }
           }, timeDelay)
@@ -159,8 +163,8 @@ function init() {
       case 37:
         // console.log('left key has been pressed')
         if (gameGrid[playerPosition - 1].className !== 'barrier') {
-          clearInterval(timerId)
-          timerId = setInterval(() => {
+          clearInterval(playerTimerId)
+          playerTimerId = setInterval(() => {
             if (gameGrid[playerPosition - 1].className !== 'barrier') {
               gameGrid[playerPosition].classList.remove('Player')
               playerPosition--
@@ -168,7 +172,7 @@ function init() {
               foodsEaten()
               checkWin()
             } else {
-              clearInterval(timerId)
+              clearInterval(playerTimerId)
               return
             }
           }, timeDelay)
@@ -180,8 +184,8 @@ function init() {
       case 38:
         // console.log('Up key has been pressed')
         if (gameGrid[playerPosition - width].className !== 'barrier') {
-          clearInterval(timerId)
-          timerId = setInterval(() => {
+          clearInterval(playerTimerId)
+          playerTimerId = setInterval(() => {
             if (gameGrid[playerPosition - width].className !== 'barrier') {
               gameGrid[playerPosition].classList.remove('Player')
               playerPosition -= width
@@ -189,7 +193,7 @@ function init() {
               foodsEaten()
               checkWin()
             } else {
-              clearInterval(timerId)
+              clearInterval(playerTimerId)
               return
             }
           }, timeDelay)
@@ -201,8 +205,8 @@ function init() {
       case 40:
         // console.log('Down key has been pressed')
         if (gameGrid[playerPosition + width].className !== 'barrier') {
-          clearInterval(timerId)
-          timerId = setInterval(() => {
+          clearInterval(playerTimerId)
+          playerTimerId = setInterval(() => {
             if (gameGrid[playerPosition + width].className !== 'barrier') {
               gameGrid[playerPosition].classList.remove('Player')
               playerPosition += width
@@ -210,7 +214,7 @@ function init() {
               foodsEaten()
               checkWin()
             } else {
-              clearInterval(timerId)
+              clearInterval(playerTimerId)
               return
             }
           }, timeDelay)
@@ -222,6 +226,8 @@ function init() {
       default: 
         console.log('Invalid key')
     }
+    const id = setInterval(handleGhostMove, timeDelay)
+    console.log('Id is', id)
   }
 
   //* Add event listener for the player movement function
@@ -278,6 +284,56 @@ function init() {
   }
 
 
+//!----------------------------------------------------------------------------------------------
+
+
+  //?Ghost position and movement
+  //* Checking the first location of div with class 'ghost-lair'
+  const ghostEntranceIndex = gameGrid.findIndex(object => {
+    return object.className === 'ghost-lair'
+  })
+
+  // console.log(ghostEntranceIndex)
+
+  //* Position of 1st ghost (outside of lair)
+  let ghost1Position = ghostEntranceIndex - width
+  // console.log(ghost1Position)
+
+  //* Adding 1st ghost to 'gameGrid'
+  gameGrid[ghost1Position].classList.add('Ghost')
+
+  //* Defining array of possible movements for 'Ghost'
+  const ghostDirections = [1, -1, width, -width]
+
+
+  //* Define Event Listener Function to handle random directional 'Ghost' movements in response to player key being pressed
+
+  function handleGhostMove() {
+    console.log('Ghost movement event function has been triggered')
+    //* Generate random movement from array 'ghostDirections' using Math object library
+    let randomDirection = ghostDirections[Math.floor(Math.random() * ghostDirections.length)]
+    // console.log(randomDirection)
+
+    //* For 2nd event onwards, clear interval of earlier events
+    if (gameGrid[ghost1Position + randomDirection].className !== 'barrier') {
+      console.log('GhostTimerId is', ghostTimerId)
+      clearInterval(ghostTimerId)
+      //* Use setInterval() to generate continuous movement with each 'keyup' event
+      ghostTimerId = setInterval(() => {
+        if (gameGrid[ghost1Position + randomDirection].className !== 'barrier') {
+          console.log('Ghost1position is', ghost1Position)
+          gameGrid[ghost1Position].classList.remove('Ghost')
+          ghost1Position += randomDirection
+          gameGrid[ghost1Position].classList.add('Ghost')
+        }
+      }, timeDelay)
+    } else {
+      return
+    }
+    // console.log(gameGrid[ghost1Position + randomDirection])
+    // console.log(gameGrid[ghost1Position + randomDirection].className)
+
+  }
 
 
 
@@ -288,6 +344,9 @@ function init() {
 
 
 
+
+  //* Adding event listener for the 'Ghost' movement function
+  // document.addEventListener('keyup', handleGhostMove)
 
 
 
