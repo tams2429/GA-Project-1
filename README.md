@@ -45,7 +45,13 @@ This repo contains the 1st project (Make a Game) after module 1 of GA SEI Bootca
 * Use setInterval() method to check a regular intervals? more regular than movement of player and ghost? and attach function to startGame() to start checking from the start of the game
 
 ### Behaviour of Flashing food
-
+* Create a new function containing the behaviour of 'Flashing food' when 'eaten' by pacman, this will be invoked within the function, handlePlayerMove()
+* This function will contain an 'if' conditional statement, which will check if 'gameGrid[ playerPosition].classList.contains('flashing-food')', then remove class 'flashing-foods' from that cell and add 5000 points to 'scoreNum' and update 'score.innerHTML'
+* Within this 'if' statement, use array.map method (i.e. const currentGhostPositions = gameGrid.map((object, index) => {if (object.classList.contains('Ghost-Hunter)){return index}} ) ) to find all the indexes of the objects with class 'Ghost-Hunter' and store them in array 'currentGhostPositions',
+* Access the object, remove the class 'Ghost-Hunter' (i.e. gameGrid[currentGhostPositions [0]].classList.remove('Ghost-Hunter')) and add the class 'Ghost-Hunted'
+  * May already know the ghost positions, 'ghost1Position', 'ghost2Position' etc
+* Access the player object and remove the class 'Player-Hunted' (i.e. gameGrid[ playerPosition ].classList.remove('Player-Hunted)) and then add the class 'Player-Hunter'
+* setTimeout() for function (either write inline or define separate function, undoTransform(), to be called) that reverses the class changes above 
 
 
 ### Player capturing Ghost
