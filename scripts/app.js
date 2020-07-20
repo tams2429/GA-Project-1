@@ -85,6 +85,11 @@ function init() {
 //!-----------------------------------------------------------------------------------------
 
   //? Creating movement and movement rules for 'Player'
+
+  //*Game variables 
+  //*Time delay constant between each movement (increase speed for higher difficulty?)
+  const timeDelay = 200
+
   //*Check current position of 'Player'
   console.log('Currently player is in cell index', playerPosition)
   // console.log(gameGrid[playerPosition])
@@ -106,11 +111,12 @@ function init() {
               gameGrid[playerPosition].classList.remove('Player')
               playerPosition++
               gameGrid[playerPosition].classList.add('Player')
+              foodsEaten()
             } else {
               clearInterval(timerId)
               return
             }
-          },500)
+          }, timeDelay)
         } else {
           return
         }
@@ -125,11 +131,12 @@ function init() {
               gameGrid[playerPosition].classList.remove('Player')
               playerPosition--
               gameGrid[playerPosition].classList.add('Player')
+              foodsEaten()
             } else {
               clearInterval(timerId)
               return
             }
-          },500)
+          }, timeDelay)
         } else {
           return
         }
@@ -144,11 +151,12 @@ function init() {
               gameGrid[playerPosition].classList.remove('Player')
               playerPosition -= width
               gameGrid[playerPosition].classList.add('Player')
+              foodsEaten()
             } else {
               clearInterval(timerId)
               return
             }
-          },500)
+          }, timeDelay)
         } else {
           return
         }
@@ -163,11 +171,12 @@ function init() {
               gameGrid[playerPosition].classList.remove('Player')
               playerPosition += width
               gameGrid[playerPosition].classList.add('Player')
+              foodsEaten()
             } else {
               clearInterval(timerId)
               return
             }
-          },500)
+          }, timeDelay)
         } else {
           return
         }
@@ -184,10 +193,25 @@ function init() {
 
 //!-------------------------------------------------------------------------------------------
 
-  //?Behaiour of food
-  //*
+  //?Behaviour of food
+  //*Get Span element from the DOM to update as food is eaten
+  const score = document.querySelector('#score-value')
+  let scoreNum = parseFloat(score.innerHTML)
+  // console.log(score)
+  // console.log(scoreNum)
+  // console.log(typeof(scoreNum))
 
+  //* Create function to remove the food class + update score (+2000 for each food eaten), for invocation within the handlePlayerMove() function
 
+  function foodsEaten() {
+    if (gameGrid[playerPosition].classList.contains('food')) {
+      gameGrid[playerPosition].classList.remove('food')
+      scoreNum += 2000
+      score.innerHTML = scoreNum
+    } else {
+      return
+    }
+  }
 
 
 
