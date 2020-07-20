@@ -97,6 +97,7 @@ function init() {
   function startGame() {
     createGrid()
     gameTimerId = setInterval(ghostMove, startDelay)
+    // capturePlayer()
     //! Having problems with adding way to stop ghost movement when game is won
 
   }
@@ -264,8 +265,10 @@ function init() {
       return gridSquare.classList.contains('food') === true
     })
     // console.log(foodsRemaining)
-    console.log(foodsRemaining.length)
+    // console.log(foodsRemaining.length)
     if (foodsRemaining.length === 0) {
+      clearInterval(gameTimerId)
+      clearInterval(ghostTimerId)
       window.alert(`Congratulations, you won! Your score is ${scoreNum}`)
       const restart = window.confirm('Congratulations, you won! Do you wish to play again?')
       if (restart) {
@@ -302,19 +305,19 @@ function init() {
   //* Define Event Listener Function to handle random directional 'Ghost' movements in response to player key being pressed
 
   function ghostMove() {
-    console.log('Ghost movement event function has been triggered')
+    // console.log('Ghost movement event function has been triggered')
     //* Generate random movement from array 'ghostDirections' using Math object library
     let randomDirection = ghostDirections[Math.floor(Math.random() * ghostDirections.length)]
     // console.log(randomDirection)
 
     //* For 2nd event onwards, clear interval of earlier events
     if (gameGrid[ghost1Position + randomDirection].className !== 'barrier') {
-      console.log('GhostTimerId is', ghostTimerId)
+      // console.log('GhostTimerId is', ghostTimerId)
       clearInterval(ghostTimerId)
       //* Use setInterval() to generate continuous movement 
       ghostTimerId = setInterval(() => {
         if (gameGrid[ghost1Position + randomDirection].className !== 'barrier') {
-          console.log('Ghost1position is', ghost1Position)
+          // console.log('Ghost1position is', ghost1Position)
           gameGrid[ghost1Position].classList.remove('Ghost-Hunter')
           ghost1Position += randomDirection
           gameGrid[ghost1Position].classList.add('Ghost-Hunter')
@@ -329,7 +332,18 @@ function init() {
 
 
 
+//!--------------------------------------------------------------------------------------------
 
+  //? Function to check whether Ghosts have captured Player
+
+  function capturePlayer() {
+    // console.log('The capturePlayer function has been invoked')
+    if (gameGrid[playerPosition].classList.contains('Ghost-Hunter')) {
+
+    }
+    console.log(gameOverSquare)
+    // if (gameGrid.findIndex(object => {}) !== -1)
+  }
 
 
 
