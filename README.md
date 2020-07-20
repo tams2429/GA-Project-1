@@ -13,7 +13,7 @@ This repo contains the 1st project (Make a Game) after module 1 of GA SEI Bootca
 
 ### Player position and movement
 * Add '.player' class to the starting position in the grid array,
-* Add Event Listener for 'keydown' event? and attach to a new function (i.e. function handlePlayerMove()) to govern movement of player,
+* Add Event Listener for 'keyup' event? and attach to a new function (i.e. function handlePlayerMove()) to govern movement of player,
 * First, remove class '.Player' in current gameGrid[ playerPosition ],
 * Within function, add 'switch' statement to check which keys are pressed and nested 'if' statement to define boundaries of movements:
   1. For left + right movement, if (gameGrid[player position + 1].classList !== 'barrier'), then => gameGrid[playerPosition + 1]?
@@ -35,4 +35,7 @@ This repo contains the 1st project (Make a Game) after module 1 of GA SEI Bootca
   3. Using array method, array.length, check the length of the array, if length = 0 => that game is won
   4. Display winning alerts
 
-### 
+### Ghost position and movement
+* Add '.Ghost' class to the starting position in the grid array,
+* Add Event Listener (not sure what? maybe attach to same event listener 'keyup' in response to player move) and attach to a new function (i.e. function handleGhostMove()) to govern movement of Ghost based on movement of Player?
+* Initially try to do random movement for ghost by creating an array of possible movement (i.e. [-1, 1, -width, width]) and using 'let movement = array[Math.floor(Math.random() * array.length)]' to select any of the movements, 'if' ('gameGrid[ghostPosition + movement].className !== 'barrier') then remove className 'ghost' from old position, update 'ghostPosition' and add className 'ghost' to new position, (Encapsulate this whole step in a setInterval() method)
