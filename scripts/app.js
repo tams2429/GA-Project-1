@@ -8,7 +8,8 @@ function init() {
   let ghostTimerId = 0
   let gameTimerId = 0
   let gameOverTimerId = 0
-  let currentGhostPositions = []
+  let startingGhostPositions = [333, 390, 391, 392] 
+  let currentGhostPositions = [333, 390, 391, 392]
 
 
 
@@ -133,6 +134,7 @@ function init() {
     gameTimerId = setInterval(ghostMove, startDelay)
     //* Keep time delay for iterations of capturePlayer() as low as possible, to initiate game over as soon as 'Player-Hunted' hits 'Ghost-Hunter'
     gameOverTimerId = setInterval(capturePlayer, 10)
+    //* Add setInterval for iterations of captureGhost() as low as possible, in order to detect collisions and send 'Ghosts' back to lair 
  
 
   }
@@ -328,11 +330,11 @@ function init() {
     return object.className === 'ghost-lair'
   })
 
-  // console.log(ghostEntranceIndex)
+  console.log('The Ghost Entrance is at index', ghostEntranceIndex)
+  //* Checking Position of 1st ghost (outside of lair) 
+  // currentGhostPositions[0] = ghostEntranceIndex - width
 
-  //* Position of 1st ghost (outside of lair)
-  currentGhostPositions[0] = ghostEntranceIndex - width
-  // console.log(currentGhostPositions[0])
+  //!To add other ghost positions later
 
   //* Adding 1st ghost to 'gameGrid'
   gameGrid[currentGhostPositions[0]].classList.add('Ghost-Hunter')
@@ -383,31 +385,6 @@ function init() {
     // console.log(gameGrid[currentGhostPositions[0] + randomDirection].className)
   }
 
-  function ghostHuntedMove() {
-    // console.log('Ghost movement event function has been triggered')
-    //* Generate random movement from array 'ghostDirections' using Math object library
-    let randomDirection = ghostDirections[Math.floor(Math.random() * ghostDirections.length)]
-    // console.log(randomDirection)
-
-    //* For 2nd event onwards, clear interval of earlier events
-    if (gameGrid[currentGhostPositions[0] + randomDirection].className !== 'barrier') {
-      // console.log('GhostTimerId is', ghostTimerId)
-      clearInterval(ghostTimerId)
-      //* Use setInterval() to generate continuous movement 
-      ghostTimerId = setInterval(() => {
-        if (gameGrid[currentGhostPositions[0] + randomDirection].className !== 'barrier') {
-          // console.log('currentGhostPositions[0] is', currentGhostPositions[0])
-          gameGrid[currentGhostPositions[0]].classList.remove('Ghost-Hunted')
-          currentGhostPositions[0] += randomDirection
-          gameGrid[currentGhostPositions[0]].classList.add('Ghost-Hunted')
-        }
-      }, ghostDelay)
-    } else {
-      return
-    }
-    // console.log(gameGrid[currentGhostPositions[0] + randomDirection])
-    // console.log(gameGrid[currentGhostPositions[0] + randomDirection].className)
-  }
 
 
 
@@ -435,6 +412,21 @@ function init() {
     }
   }
 
+  //? Function to check whether Player have captured Ghosts
+
+  function captureGhosts() {
+    console.log('The captureGhost function has been invoked')
+    if (gameGrid[playerPosition].classList.contains('Ghost-Hunted')) {
+      gameGrid[playerPosition].classList.remove('Ghost-Hunted')
+      scoreNum += 10000
+      score.innerHTML = scoreNum
+      
+      //* Send eaten Ghost back to lair & lair entrance + transform back into 'Ghost-Hunter'
+      gameGrid[startingGhostPositions[0]].classList.add('Ghost-Hunter')
+    } 
+
+  }
+
 
 //!----------------------------------------------------------------------------------------------
 
@@ -449,10 +441,9 @@ function init() {
       score.innerHTML = scoreNum
       //* Reset 'currentGhostPosition' to an empty array after everytime of eating 'flashing-food'
       currentGhostPositions = []
-      console.log(currentGhostPositions)
       //*For loop to output ghost position index in 'gameGrid' to an array, 'currentGhostPosition' at time of eating 'flashing-food'
 
-      //* Set timeOut for the assignment 'Ghost-Hunter
+
       for (let i = 0; i < gameGrid.length; i++) {
         if (gameGrid[i].classList.contains('Ghost-Hunter')) {
           currentGhostPositions.push(i)
@@ -464,6 +455,15 @@ function init() {
           console.log(currentGhostPositions)
         }
       }
+
+      //* Add setInterval with captureGhost() that will detect 'if' there is collision between converted players and ghosts + add points + send ghosts back to original location
+
+
+      //* Add setTimeout with a logic that reverts everything back i.e. 'Ghost-Hunted' to 'Ghost-Hunter' & 'Player-Hunter' to 'Player-Hunted', within setTimout() add functionality to clear setInterval(captureGhost)
+
+
+
+
 
       // console.log(currentGhostPositions)
       //* Stop random movement for 'Ghost-Hunter'
