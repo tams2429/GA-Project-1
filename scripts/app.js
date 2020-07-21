@@ -175,7 +175,6 @@ function init() {
         if (gameGrid[playerPosition + 1].className !== 'barrier') {
           clearInterval(playerTimerId)
           playerTimerId = setInterval(() => {
-            //* Checking if player is hunted or hunter
             if (gameGrid[playerPosition + 1].className !== 'barrier') {
               //* Checking if player is hunted or hunter
               if (gameGrid[playerPosition].classList.contains('Player-Hunted')) {
@@ -206,9 +205,16 @@ function init() {
           clearInterval(playerTimerId)
           playerTimerId = setInterval(() => {
             if (gameGrid[playerPosition - 1].className !== 'barrier') {
-              gameGrid[playerPosition].classList.remove('Player-Hunted')
-              playerPosition--
-              gameGrid[playerPosition].classList.add('Player-Hunted')
+              //* Checking if player is hunted or hunter
+              if (gameGrid[playerPosition].classList.contains('Player-Hunted')) {
+                gameGrid[playerPosition].classList.remove('Player-Hunted')
+                playerPosition--
+                gameGrid[playerPosition].classList.add('Player-Hunted')
+              } else if (gameGrid[playerPosition].classList.contains('Player-Hunter')) {
+                gameGrid[playerPosition].classList.remove('Player-Hunter')
+                playerPosition--
+                gameGrid[playerPosition].classList.add('Player-Hunter')
+              }
               foodsEaten()
               flashFoodEaten()
               checkWin()
@@ -228,9 +234,16 @@ function init() {
           clearInterval(playerTimerId)
           playerTimerId = setInterval(() => {
             if (gameGrid[playerPosition - width].className !== 'barrier') {
-              gameGrid[playerPosition].classList.remove('Player-Hunted')
-              playerPosition -= width
-              gameGrid[playerPosition].classList.add('Player-Hunted')
+              //* Checking if player is hunted or hunter
+              if (gameGrid[playerPosition].classList.contains('Player-Hunted')) {
+                gameGrid[playerPosition].classList.remove('Player-Hunted')
+                playerPosition -= width
+                gameGrid[playerPosition].classList.add('Player-Hunted')
+              } else if (gameGrid[playerPosition].classList.contains('Player-Hunter')) {
+                gameGrid[playerPosition].classList.remove('Player-Hunter')
+                playerPosition -= width
+                gameGrid[playerPosition].classList.add('Player-Hunter')
+              }
               foodsEaten()
               flashFoodEaten()
               checkWin()
@@ -250,9 +263,16 @@ function init() {
           clearInterval(playerTimerId)
           playerTimerId = setInterval(() => {
             if (gameGrid[playerPosition + width].className !== 'barrier') {
-              gameGrid[playerPosition].classList.remove('Player-Hunted')
-              playerPosition += width
-              gameGrid[playerPosition].classList.add('Player-Hunted')
+              //* Checking if player is hunted or hunter
+              if (gameGrid[playerPosition].classList.contains('Player-Hunted')) {
+                gameGrid[playerPosition].classList.remove('Player-Hunted')
+                playerPosition += width
+                gameGrid[playerPosition].classList.add('Player-Hunted')
+              } else if (gameGrid[playerPosition].classList.contains('Player-Hunter')) {
+                gameGrid[playerPosition].classList.remove('Player-Hunter')
+                playerPosition += width
+                gameGrid[playerPosition].classList.add('Player-Hunter')
+              }
               foodsEaten()
               flashFoodEaten()
               checkWin()
@@ -496,10 +516,6 @@ function init() {
           }
         }
       }, 10000)
-
-
-
-
     } else {
       return
     }

@@ -60,4 +60,4 @@ This repo contains the 1st project (Make a Game) after module 1 of GA SEI Bootca
 * Use setInterval() method and invoke within the flashFoodEaten() to check at regular intervals from when 'flashing-food' has been eaten,
 * Add score if 'Ghost-Hunted' is within the player square + send ghost back to lair + change ghost class back from 'Ghost-Hunted' to 'Ghost-Hunter'
 
-
+### Add logic for Ghost to move incrementally closer to Player
