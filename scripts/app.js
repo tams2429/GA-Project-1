@@ -175,10 +175,18 @@ function init() {
         if (gameGrid[playerPosition + 1].className !== 'barrier') {
           clearInterval(playerTimerId)
           playerTimerId = setInterval(() => {
+            //* Checking if player is hunted or hunter
             if (gameGrid[playerPosition + 1].className !== 'barrier') {
-              gameGrid[playerPosition].classList.remove('Player-Hunted')
-              playerPosition++
-              gameGrid[playerPosition].classList.add('Player-Hunted')
+              //* Checking if player is hunted or hunter
+              if (gameGrid[playerPosition].classList.contains('Player-Hunted')) {
+                gameGrid[playerPosition].classList.remove('Player-Hunted')
+                playerPosition++
+                gameGrid[playerPosition].classList.add('Player-Hunted')
+              } else if (gameGrid[playerPosition].classList.contains('Player-Hunter')) {
+                gameGrid[playerPosition].classList.remove('Player-Hunter')
+                playerPosition++
+                gameGrid[playerPosition].classList.add('Player-Hunter')
+              }
               foodsEaten()
               flashFoodEaten()
               checkWin()
@@ -441,6 +449,11 @@ function init() {
     if (gameGrid[playerPosition].classList.contains('flashing-food')) {
 
       gameGrid[playerPosition].classList.remove('flashing-food')
+
+      //* Changing Player class from 'Player-Hunted' to 'Player-Hunter'
+      gameGrid[playerPosition].classList.remove('Player-Hunted')
+      gameGrid[playerPosition].classList.add('Player-Hunter')
+
       scoreNum += 5000
       score.innerHTML = scoreNum
       //* Reset 'currentGhostPosition' to an empty array after everytime of eating 'flashing-food'
@@ -466,6 +479,11 @@ function init() {
       //* Add setTimeout with a logic that reverts everything back i.e. 'Ghost-Hunted' to 'Ghost-Hunter' & 'Player-Hunter' to 'Player-Hunted', within setTimout() add functionality to clear setInterval(captureGhost)
       clearInterval(transformTimeOutId)
       transformTimeOutId = setTimeout(() => {
+        //*Transform Player class back from 'Player-Hunter' back to 'Player-Hunted'
+        gameGrid[playerPosition].classList.remove('Player-Hunter')
+        gameGrid[playerPosition].classList.add('Player-Hunted')
+
+        //* Transform Ghost class back from 'Ghost-Hunted' back to 'Ghost-Hunter'
         for (let i = 0; i < gameGrid.length; i++) {
           if (gameGrid[i].classList.contains('Ghost-Hunted')) {
             currentGhostPositions.push(i)
