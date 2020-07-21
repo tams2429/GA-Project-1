@@ -544,34 +544,109 @@ function init() {
 
     console.log(currentGhostPositions[0] % width)
     console.log(currentGhostPositions[0] % width > playerPosition % width)
-    //*1st Check => if current ghost position is to the right of player position
-    //*2nd Check => if current ghost position is to the left of the player position
-    if (currentGhostPositions[0] % width > playerPosition % width) {
-      gameGrid[currentGhostPositions[0]].classList.remove('Ghost-Hunter')
-      currentGhostPositions[0]--
-      gameGrid[currentGhostPositions[0]].classList.add('Ghost-Hunter')
-      console.log(currentGhostPositions[0])
-    } else if (currentGhostPositions[0] % width < playerPosition % width) {
-      gameGrid[currentGhostPositions[0]].classList.remove('Ghost-Hunter')
-      currentGhostPositions[0]++
-      gameGrid[currentGhostPositions[0]].classList.add('Ghost-Hunter')
-      console.log(currentGhostPositions[0])
-    } else {
-      //* Else check => if current ghost position is above/below player position
+    //*1st Check => Check if there isn't a barrier to the left and right of the current ghost position, if true, then check if ghost is to the left or right of the player position and move accordingly
+    //*2nd Check => if there is a barrier to the left and right of the current ghost position. Check if there isn't a barrier above and below the current ghost position, if true, then check if ghost is above or below player position and move accordingly
+    //* Else Check => Cover final case (i.e. the corners of the grid) where there is one barrier in any direction, Check if ghost is to the left/right or above/below current player position and move accordingly
+    //! How to make ghost move down before getting to the barrier?
+
+    if (!gameGrid[currentGhostPositions[0] - 1].classList.contains('barrier') &&
+    !gameGrid[currentGhostPositions[0] + 1].classList.contains('barrier')) {
+      if (currentGhostPositions[0] % width >= playerPosition % width) {
+        //*Check if there is barrier
+        // console.log('Is there a barrier?',gameGrid[currentGhostPositions[0] - 1].classList.contains('barrier'))
+        gameGrid[currentGhostPositions[0]].classList.remove('Ghost-Hunter')
+        currentGhostPositions[0]--
+        gameGrid[currentGhostPositions[0]].classList.add('Ghost-Hunter')
+        // console.log(currentGhostPositions[0])
+  
+      } else if (currentGhostPositions[0] % width < playerPosition % width) {
+        gameGrid[currentGhostPositions[0]].classList.remove('Ghost-Hunter')
+        currentGhostPositions[0]++
+        gameGrid[currentGhostPositions[0]].classList.add('Ghost-Hunter')
+        // console.log(currentGhostPositions[0])
+      }
+    } else if (!gameGrid[currentGhostPositions[0] - width].classList.contains('barrier') &&
+    !gameGrid[currentGhostPositions[0] + width].classList.contains('barrier')) {
       if (currentGhostPositions[0] > playerPosition) {
         gameGrid[currentGhostPositions[0]].classList.remove('Ghost-Hunter')
         currentGhostPositions[0] -= width
         gameGrid[currentGhostPositions[0]].classList.add('Ghost-Hunter')
-        console.log(currentGhostPositions[0])
+        // console.log(currentGhostPositions[0])
       } else if (currentGhostPositions[0] < playerPosition) {
         gameGrid[currentGhostPositions[0]].classList.remove('Ghost-Hunter')
         currentGhostPositions[0] += width
         gameGrid[currentGhostPositions[0]].classList.add('Ghost-Hunter')
-        console.log(currentGhostPositions[0])
+        // console.log(currentGhostPositions[0])
+      }
+    } else {
+      console.log('This is the corner case')
+      if (currentGhostPositions[0] % width > playerPosition % width) {
+        gameGrid[currentGhostPositions[0]].classList.remove('Ghost-Hunter')
+        currentGhostPositions[0]--
+        gameGrid[currentGhostPositions[0]].classList.add('Ghost-Hunter')
+        // console.log(currentGhostPositions[0])
+      } else if (currentGhostPositions[0] % width < playerPosition % width) {
+        gameGrid[currentGhostPositions[0]].classList.remove('Ghost-Hunter')
+        currentGhostPositions[0]++
+        gameGrid[currentGhostPositions[0]].classList.add('Ghost-Hunter')
+        // console.log(currentGhostPositions[0])
+      } else {
+        if (currentGhostPositions[0] > playerPosition) {
+          gameGrid[currentGhostPositions[0]].classList.remove('Ghost-Hunter')
+          currentGhostPositions[0] -= width
+          gameGrid[currentGhostPositions[0]].classList.add('Ghost-Hunter')
+        } else if (currentGhostPositions[0] < playerPosition) {
+          gameGrid[currentGhostPositions[0]].classList.remove('Ghost-Hunter')
+          currentGhostPositions[0] += width
+          gameGrid[currentGhostPositions[0]].classList.add('Ghost-Hunter')
+        } 
       }
     }
+
   }
 
+  //! May refactor ghostAggroMove() with two functions (i.e. ghostAggroHoriMove() and ghostAggroVertMove())below
+
+  // function ghostAggroHoriMove() {
+  //   if (!gameGrid[currentGhostPositions[0] - 1].classList.contains('barrier') &&
+  //   !gameGrid[currentGhostPositions[0] + 1].classList.contains('barrier')) {
+  //     if (currentGhostPositions[0] % width > playerPosition % width) {
+  //       //*Check if there is barrier
+  //       // console.log('Is there a barrier?',gameGrid[currentGhostPositions[0] - 1].classList.contains('barrier'))
+  //       gameGrid[currentGhostPositions[0]].classList.remove('Ghost-Hunter')
+  //       currentGhostPositions[0]--
+  //       gameGrid[currentGhostPositions[0]].classList.add('Ghost-Hunter')
+  //       // console.log(currentGhostPositions[0])
+  
+  //     } else if (currentGhostPositions[0] % width < playerPosition % width) {
+  //       gameGrid[currentGhostPositions[0]].classList.remove('Ghost-Hunter')
+  //       currentGhostPositions[0]++
+  //       gameGrid[currentGhostPositions[0]].classList.add('Ghost-Hunter')
+  //       // console.log(currentGhostPositions[0])
+  //     }
+  //   } else {
+  //     return
+  //   }
+  // }
+
+  // function ghostAggroVertMove(){
+  //   if (!gameGrid[currentGhostPositions[0] - width].classList.contains('barrier') &&
+  //   !gameGrid[currentGhostPositions[0] + width].classList.contains('barrier')) {
+  //     if (currentGhostPositions[0] > playerPosition) {
+  //       gameGrid[currentGhostPositions[0]].classList.remove('Ghost-Hunter')
+  //       currentGhostPositions[0] -= width
+  //       gameGrid[currentGhostPositions[0]].classList.add('Ghost-Hunter')
+  //       // console.log(currentGhostPositions[0])
+  //     } else if (currentGhostPositions[0] < playerPosition) {
+  //       gameGrid[currentGhostPositions[0]].classList.remove('Ghost-Hunter')
+  //       currentGhostPositions[0] += width
+  //       gameGrid[currentGhostPositions[0]].classList.add('Ghost-Hunter')
+  //       // console.log(currentGhostPositions[0])
+  //     }
+  //   } else {
+  //     return
+  //   }
+  // }
   // ghostAggroMove()
 
 
