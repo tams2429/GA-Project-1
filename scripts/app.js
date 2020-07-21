@@ -140,7 +140,7 @@ function init() {
   function startGame() {
     createGrid()
     // gameTimerId = setInterval(ghostMove, startDelay)
-    ghostAggroMove()
+    setInterval(ghostAggroMove, startDelay)
     //* Keep time delay for iterations of capturePlayer() as low as possible, to initiate game over as soon as 'Player-Hunted' hits 'Ghost-Hunter'
     gameOverTimerId = setInterval(capturePlayer, 10)
     //* Add setInterval for iterations of captureGhost() as low as possible, in order to detect collisions and send 'Ghosts' back to lair 
