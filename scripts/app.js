@@ -8,6 +8,7 @@ function init() {
   let ghostTimerId = 0
   let gameTimerId = 0
   let gameOverTimerId = 0
+  let currentGhostPositions = []
 
 
 
@@ -348,6 +349,9 @@ function init() {
     let randomDirection = ghostDirections[Math.floor(Math.random() * ghostDirections.length)]
     // console.log(randomDirection)
 
+    // //* Need to check if Ghost is currently Hunter or Hunted
+    // if (gameGrid[ghost1Position].classList.contains())
+
     //* For 2nd event onwards, clear interval of earlier events
     if (gameGrid[ghost1Position + randomDirection].className !== 'barrier') {
       // console.log('GhostTimerId is', ghostTimerId)
@@ -356,9 +360,35 @@ function init() {
       ghostTimerId = setInterval(() => {
         if (gameGrid[ghost1Position + randomDirection].className !== 'barrier') {
           // console.log('Ghost1position is', ghost1Position)
-          gameGrid[ghost1Position].classList.remove('Ghost-Hunter')
+          gameGrid[ghost1Position].classList.remove('Ghost-Hunter', 'Ghost-Hunted')
           ghost1Position += randomDirection
-          gameGrid[ghost1Position].classList.add('Ghost-Hunter')
+          gameGrid[ghost1Position].classList.add('Ghost-Hunter', 'Ghost-Hunted')
+        }
+      }, ghostDelay)
+    } else {
+      return
+    }
+    // console.log(gameGrid[ghost1Position + randomDirection])
+    // console.log(gameGrid[ghost1Position + randomDirection].className)
+  }
+
+  function ghostHuntedMove() {
+    // console.log('Ghost movement event function has been triggered')
+    //* Generate random movement from array 'ghostDirections' using Math object library
+    let randomDirection = ghostDirections[Math.floor(Math.random() * ghostDirections.length)]
+    // console.log(randomDirection)
+
+    //* For 2nd event onwards, clear interval of earlier events
+    if (gameGrid[currentGhostPositions[0] + randomDirection].className !== 'barrier') {
+      // console.log('GhostTimerId is', ghostTimerId)
+      clearInterval(ghostTimerId)
+      //* Use setInterval() to generate continuous movement 
+      ghostTimerId = setInterval(() => {
+        if (gameGrid[currentGhostPositions[0] + randomDirection].className !== 'barrier') {
+          // console.log('currentGhostPositions[0] is', currentGhostPositions[0])
+          gameGrid[currentGhostPositions[0]].classList.remove('Ghost-Hunted')
+          currentGhostPositions[0] += randomDirection
+          gameGrid[currentGhostPositions[0]].classList.add('Ghost-Hunted')
         }
       }, ghostDelay)
     } else {
@@ -406,6 +436,28 @@ function init() {
       gameGrid[playerPosition].classList.remove('flashing-food')
       scoreNum += 5000
       score.innerHTML = scoreNum
+      //* Reset 'currentGhostPosition' to an empty array after everytime of eating 'flashing-food'
+      currentGhostPositions = []
+      //*For loop to output ghost position index in 'gameGrid' to an array, 'currentGhostPosition' at time of eating 'flashing-food'
+
+      //* Set timeOut for the assignment 'Ghost-Hunter
+      for (let i = 0; i < gameGrid.length; i++) {
+        if (gameGrid[i].classList.contains('Ghost-Hunter')) {
+          currentGhostPositions.push(i)
+          console.log(currentGhostPositions)
+          gameGrid[i].classList.remove('Ghost-Hunter')
+          gameGrid[i].classList.add('Ghost-Hunted')
+        }
+      }
+
+      // console.log(currentGhostPositions)
+      //* Stop random movement for 'Ghost-Hunter'
+      clearInterval(gameTimerId)
+      clearInterval(ghostTimerId)
+
+      //* Define random movement for 'Ghost-Hunted'
+
+
     } else {
       return
     }
