@@ -525,10 +525,45 @@ function init() {
 
 
 
+//!----------------------------------------------------------------------------------------------------
+
+  //? Ghost AI movements (should move closer to Player)
+  //* Prioritise horizontal movement first until ghost hits a barrier
+  //* 'playerPosition' and 'currentGhostPositions' already defined and are actively changing
+  
+  //*Create function to replace ghostMove(), which will contain logic for ghosts to move closer to player
+  //* Will be attached and invoked to handlePlayerMove()
+  function ghostAggroMove() {
+    // console.log('The ghostAggroMove function has been invoked')
+    console.log('Current ghost position is', currentGhostPositions[0])
+    console.log('Current player position is', playerPosition)
+
+    // console.log(currentGhostPositions[0] % width)
+    // console.log(currentGhostPositions[0] % width > playerPosition % width)
+    //*1st Check => if current ghost position is to the right of player position
+    //*2nd Check => if current ghost position is to the left of the player position
+    if (currentGhostPositions[0] % width > playerPosition % width) {
+      currentGhostPositions[0]--
+    } else if (currentGhostPositions[0] % width < playerPosition % width) {
+      currentGhostPositions[0]++
+    } else {
+      //* Else check => if current ghost position is above/below player position
+      if (currentGhostPositions[0] > playerPosition) {
+        currentGhostPositions[0] -= width
+      } else if (currentGhostPositions[0] < playerPosition) {
+        currentGhostPositions[0] += width
+      }
+    }
+  }
+
+  ghostAggroMove()
 
 
 
 
+
+
+  //* Need to create a ghostScaredMove()
 }
 
 window.addEventListener('DOMContentLoaded', init)
