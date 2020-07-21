@@ -8,6 +8,8 @@ function init() {
   let ghostTimerId = 0
   let gameTimerId = 0
   let gameOverTimerId = 0
+  let hunterTimerId = 0
+  let transformTimeOutId = 0
   let startingGhostPositions = [333, 390, 391, 392] 
   let currentGhostPositions = [333, 390, 391, 392]
 
@@ -423,6 +425,7 @@ function init() {
       
       //* Send eaten Ghost back to lair & lair entrance + transform back into 'Ghost-Hunter'
       gameGrid[startingGhostPositions[0]].classList.add('Ghost-Hunter')
+      currentGhostPositions[0] = startingGhostPositions[0]
     } 
 
   }
@@ -436,14 +439,15 @@ function init() {
     // console.log('Flash food function has been invoked')
     //* If statement to check if 'flashing-food' class exists in position the player is moving in, if true, remove 'flashing-food' class and add 5000 points
     if (gameGrid[playerPosition].classList.contains('flashing-food')) {
+
       gameGrid[playerPosition].classList.remove('flashing-food')
       scoreNum += 5000
       score.innerHTML = scoreNum
       //* Reset 'currentGhostPosition' to an empty array after everytime of eating 'flashing-food'
       currentGhostPositions = []
       //*For loop to output ghost position index in 'gameGrid' to an array, 'currentGhostPosition' at time of eating 'flashing-food'
-
-
+      
+      // clearInterval(hunterTimerId)
       for (let i = 0; i < gameGrid.length; i++) {
         if (gameGrid[i].classList.contains('Ghost-Hunter')) {
           currentGhostPositions.push(i)
@@ -457,20 +461,25 @@ function init() {
       }
 
       //* Add setInterval with captureGhost() that will detect 'if' there is collision between converted players and ghosts + add points + send ghosts back to original location
-
+      hunterTimerId = setInterval(captureGhosts, 10)
 
       //* Add setTimeout with a logic that reverts everything back i.e. 'Ghost-Hunted' to 'Ghost-Hunter' & 'Player-Hunter' to 'Player-Hunted', within setTimout() add functionality to clear setInterval(captureGhost)
+      clearInterval(transformTimeOutId)
+      transformTimeOutId = setTimeout(() => {
+        for (let i = 0; i < gameGrid.length; i++) {
+          if (gameGrid[i].classList.contains('Ghost-Hunted')) {
+            currentGhostPositions.push(i)
+            console.log(currentGhostPositions)
+            gameGrid[i].classList.remove('Ghost-Hunted')
+            gameGrid[i].classList.add('Ghost-Hunter')
+          } else if (gameGrid[i].classList.contains('Ghost-Hunter')) {
+            currentGhostPositions.push(i)
+            console.log(currentGhostPositions)
+          }
+        }
+      }, 10000)
 
 
-
-
-
-      // console.log(currentGhostPositions)
-      //* Stop random movement for 'Ghost-Hunter'
-      // clearInterval(gameTimerId)
-      // clearInterval(ghostTimerId)
-
-      //* Define random movement for 'Ghost-Hunted'
 
 
     } else {
