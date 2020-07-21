@@ -44,7 +44,7 @@ This repo contains the 1st project (Make a Game) after module 1 of GA SEI Bootca
 * Create a function, capturePlayer(), that checks if a grid square contains both classes, 'Player-Hunted' and 'Ghost-Hunter' at any one time,
 * Use setInterval() method to check a regular intervals? more regular than movement of player and ghost? and attach function to startGame() to start checking from the start of the game
 
-### Behaviour of Flashing food
+### Behaviour of Flashing food (Could refactor later and combine with foodsEaten())
 * Create a new function containing the behaviour of 'Flashing food' when 'eaten' by pacman, this will be invoked within the function, handlePlayerMove()
 * This function will contain an 'if' conditional statement, which will check if 'gameGrid[ playerPosition].classList.contains('flashing-food')', then remove class 'flashing-foods' from that cell and add 5000 points to 'scoreNum' and update 'score.innerHTML'
 * Within this 'if' statement, use array.map method (i.e. const currentGhostPositions = gameGrid.map((object, index) => {if (object.classList.contains('Ghost-Hunter)){return index}} ) ) to find all the indexes of the objects with class 'Ghost-Hunter' and store them in array 'currentGhostPositions',

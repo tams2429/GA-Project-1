@@ -175,6 +175,7 @@ function init() {
               playerPosition++
               gameGrid[playerPosition].classList.add('Player-Hunted')
               foodsEaten()
+              flashFoodEaten()
               checkWin()
             } else {
               clearInterval(playerTimerId)
@@ -196,6 +197,7 @@ function init() {
               playerPosition--
               gameGrid[playerPosition].classList.add('Player-Hunted')
               foodsEaten()
+              flashFoodEaten()
               checkWin()
             } else {
               clearInterval(playerTimerId)
@@ -217,6 +219,7 @@ function init() {
               playerPosition -= width
               gameGrid[playerPosition].classList.add('Player-Hunted')
               foodsEaten()
+              flashFoodEaten()
               checkWin()
             } else {
               clearInterval(playerTimerId)
@@ -238,6 +241,7 @@ function init() {
               playerPosition += width
               gameGrid[playerPosition].classList.add('Player-Hunted')
               foodsEaten()
+              flashFoodEaten()
               checkWin()
             } else {
               clearInterval(playerTimerId)
@@ -390,6 +394,22 @@ function init() {
     }
   }
 
+
+//!----------------------------------------------------------------------------------------------
+
+  //? Flashing food function
+
+  function flashFoodEaten() {
+    // console.log('Flash food function has been invoked')
+    //* If statement to check if 'flashing-food' class exists in position the player is moving in, if true, remove 'flashing-food' class and add 5000 points
+    if (gameGrid[playerPosition].classList.contains('flashing-food')) {
+      gameGrid[playerPosition].classList.remove('flashing-food')
+      scoreNum += 5000
+      score.innerHTML = scoreNum
+    } else {
+      return
+    }
+  }
 
 
 
