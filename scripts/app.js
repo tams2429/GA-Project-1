@@ -26,7 +26,7 @@ function init() {
   const gridContainer = document.querySelector('.grid-container')
   // console.log(gridContainer)
 
-  //* Define a layout array, containing a series of numbers that represent the function of the squares (i.e. 0 = food, 1 = barrier, 2 = flashing food, 3 = 'Ghost' lair, 4 = 'Player start')
+  //* Define a layout array, containing a series of numbers that represent the function of the squares (i.e. 0 = food, 1 = barrier, 2 = flashing food, 3 = 'Ghost' lair, 4 = 'Player start',)
   const layout =  [
     1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,
     1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1,
@@ -120,6 +120,12 @@ function init() {
         playerPosition = i
       }
     }
+
+    //* Add ghost positions here
+    //!To add other ghost positions later
+
+    //* Adding 1st ghost to 'gameGrid'
+    gameGrid[currentGhostPositions[0]].classList.add('Ghost-Hunter')
   }
 
   // createGrid()
@@ -133,7 +139,8 @@ function init() {
 
   function startGame() {
     createGrid()
-    gameTimerId = setInterval(ghostMove, startDelay)
+    // gameTimerId = setInterval(ghostMove, startDelay)
+    ghostAggroMove()
     //* Keep time delay for iterations of capturePlayer() as low as possible, to initiate game over as soon as 'Player-Hunted' hits 'Ghost-Hunter'
     gameOverTimerId = setInterval(capturePlayer, 10)
     //* Add setInterval for iterations of captureGhost() as low as possible, in order to detect collisions and send 'Ghosts' back to lair 
@@ -364,10 +371,7 @@ function init() {
   //* Checking Position of 1st ghost (outside of lair) 
   // currentGhostPositions[0] = ghostEntranceIndex - width
 
-  //!To add other ghost positions later
 
-  //* Adding 1st ghost to 'gameGrid'
-  gameGrid[currentGhostPositions[0]].classList.add('Ghost-Hunter')
 
   //* Defining array of possible movements for 'Ghost'
   const ghostDirections = [1, -1, width, -width]
@@ -538,25 +542,37 @@ function init() {
     console.log('Current ghost position is', currentGhostPositions[0])
     console.log('Current player position is', playerPosition)
 
-    // console.log(currentGhostPositions[0] % width)
-    // console.log(currentGhostPositions[0] % width > playerPosition % width)
+    console.log(currentGhostPositions[0] % width)
+    console.log(currentGhostPositions[0] % width > playerPosition % width)
     //*1st Check => if current ghost position is to the right of player position
     //*2nd Check => if current ghost position is to the left of the player position
     if (currentGhostPositions[0] % width > playerPosition % width) {
+      gameGrid[currentGhostPositions[0]].classList.remove('Ghost-Hunter')
       currentGhostPositions[0]--
+      gameGrid[currentGhostPositions[0]].classList.add('Ghost-Hunter')
+      console.log(currentGhostPositions[0])
     } else if (currentGhostPositions[0] % width < playerPosition % width) {
+      gameGrid[currentGhostPositions[0]].classList.remove('Ghost-Hunter')
       currentGhostPositions[0]++
+      gameGrid[currentGhostPositions[0]].classList.add('Ghost-Hunter')
+      console.log(currentGhostPositions[0])
     } else {
       //* Else check => if current ghost position is above/below player position
       if (currentGhostPositions[0] > playerPosition) {
+        gameGrid[currentGhostPositions[0]].classList.remove('Ghost-Hunter')
         currentGhostPositions[0] -= width
+        gameGrid[currentGhostPositions[0]].classList.add('Ghost-Hunter')
+        console.log(currentGhostPositions[0])
       } else if (currentGhostPositions[0] < playerPosition) {
+        gameGrid[currentGhostPositions[0]].classList.remove('Ghost-Hunter')
         currentGhostPositions[0] += width
+        gameGrid[currentGhostPositions[0]].classList.add('Ghost-Hunter')
+        console.log(currentGhostPositions[0])
       }
     }
   }
 
-  ghostAggroMove()
+  // ghostAggroMove()
 
 
 
