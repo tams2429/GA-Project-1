@@ -10,6 +10,7 @@ function init() {
   let gameOverTimerId = 0
   let hunterTimerId = 0
   let transformTimeOutId = 0
+  let scaredMoveTimeOutId = 0
   let startingGhostPositions = [333, 390, 391, 392] 
   let currentGhostPositions = [333, 390, 391, 392]
 
@@ -140,7 +141,7 @@ function init() {
   function startGame() {
     createGrid()
     // gameTimerId = setInterval(ghostMove, startDelay)
-    setInterval(ghostAggroMove, startDelay)
+    gameTimerId = setInterval(ghostAggroMove, startDelay)
     //* Keep time delay for iterations of capturePlayer() as low as possible, to initiate game over as soon as 'Player-Hunted' hits 'Ghost-Hunter'
     gameOverTimerId = setInterval(capturePlayer, 10)
     //* Add setInterval for iterations of captureGhost() as low as possible, in order to detect collisions and send 'Ghosts' back to lair 
@@ -449,7 +450,7 @@ function init() {
   //? Function to check whether Player have captured Ghosts
 
   function captureGhosts() {
-    console.log('The captureGhost function has been invoked')
+    // console.log('The captureGhost function has been invoked')
     if (gameGrid[playerPosition].classList.contains('Ghost-Hunted')) {
       gameGrid[playerPosition].classList.remove('Ghost-Hunted')
       scoreNum += 10000
@@ -501,6 +502,7 @@ function init() {
       hunterTimerId = setInterval(captureGhosts, 10)
 
       //* Add setTimeout with a logic that reverts everything back i.e. 'Ghost-Hunted' to 'Ghost-Hunter' & 'Player-Hunter' to 'Player-Hunted', within setTimout() add functionality to clear setInterval(captureGhost)
+      //!Change from clearInterval() to clearTimeout(?
       clearInterval(transformTimeOutId)
       transformTimeOutId = setTimeout(() => {
         //*Transform Player class back from 'Player-Hunter' back to 'Player-Hunted'
@@ -519,7 +521,24 @@ function init() {
             console.log(currentGhostPositions)
           }
         }
-      }, 10000)
+      }, 100000)
+      
+      //* Clear Interval to stop ghostAggroMove() and any ghostScaredMove() (from eating prior flashing foods)
+      clearInterval(gameTimerId)
+      clearInterval(scaredMoveTimeOutId)
+
+      //* Start ghostScaredMove() after eating flashing food
+      scaredMoveTimeOutId = setInterval(ghostScaredMove, startDelay)
+
+      //* After 10 seconds, setTimeout(), to clear any ghostScaredMove() and restart ghostAggroMove() by setting interval
+      // setTimeout(() => {
+      //   clearInterval(scaredMoveTimeOutId)
+      //   gameTimerId = setInterval(ghostAggroMove, startDelay)
+      // }, 10000)
+      //! Clear interval for ghostAggroMove()?
+      //! Clear interval for ghostScaredMove()?
+      //! Add setInterval for ghostScaredMove()? (How do we stop after transform back? add ClearInterval within setTimeout function above? and restart setInterval for ghostAggroMove()?)
+
     } else {
       return
     }
@@ -547,7 +566,7 @@ function init() {
     //*1st Check => Check if there isn't a barrier to the left and right of the current ghost position, if true, then check if ghost is to the left or right of the player position and move accordingly
     //*2nd Check => if there is a barrier to the left and right of the current ghost position. Check if there isn't a barrier above and below the current ghost position, if true, then check if ghost is above or below player position and move accordingly
     //* Else Check => Cover final case (i.e. the corners of the grid) where there is one barrier in any direction, Check if ghost is to the left/right or above/below current player position and move accordingly
-    //! How to make ghost move down before getting to the barrier?
+    //! How to make ghost move down/up/left/right before getting to the barrier?
 
     if (!gameGrid[currentGhostPositions[0] - 1].classList.contains('barrier') &&
     !gameGrid[currentGhostPositions[0] + 1].classList.contains('barrier')) {
@@ -603,6 +622,12 @@ function init() {
       }
     }
 
+    //* Add 'if' statement to check 'gameGrid[currentGhostPositions[0]].classList.contains('Ghost-Hunted')'
+    //* if statement is true, invoke 'ghostScaredMove()' 
+    // if (gameGrid[currentGhostPositions[0]].classList.contains('Ghost-Hunted')) {
+    //   setInterval(ghostScaredMove, startDelay)
+    // }
+
   }
 
   //! May refactor ghostAggroMove() with two functions (i.e. ghostAggroHoriMove() and ghostAggroVertMove())below
@@ -655,6 +680,80 @@ function init() {
 
 
   //* Need to create a ghostScaredMove()
+  //* Insert opposite movement directions to ghostAggroMove()
+  //* Replace ghostAggroMove() classes with 'Ghost-Hunted'
+
+  function ghostScaredMove() {
+    console.log('This is the ghostScaredMove function')
+
+    //* Opposite direction as ghostAggroMove() and change class to refer to 'Ghost-Hunted'
+    if (!gameGrid[currentGhostPositions[0] - 1].classList.contains('barrier') &&
+    !gameGrid[currentGhostPositions[0] + 1].classList.contains('barrier')) {
+      if (currentGhostPositions[0] % width >= playerPosition % width) {
+        //*Check if there is barrier
+        // console.log('Is there a barrier?',gameGrid[currentGhostPositions[0] - 1].classList.contains('barrier'))
+        gameGrid[currentGhostPositions[0]].classList.remove('Ghost-Hunted')
+        currentGhostPositions[0]++
+        gameGrid[currentGhostPositions[0]].classList.add('Ghost-Hunted')
+        // console.log(currentGhostPositions[0])
+  
+      } else if (currentGhostPositions[0] % width < playerPosition % width) {
+        gameGrid[currentGhostPositions[0]].classList.remove('Ghost-Hunted')
+        currentGhostPositions[0]--
+        gameGrid[currentGhostPositions[0]].classList.add('Ghost-Hunted')
+        // console.log(currentGhostPositions[0])
+      }
+    } else if (!gameGrid[currentGhostPositions[0] - width].classList.contains('barrier') &&
+    !gameGrid[currentGhostPositions[0] + width].classList.contains('barrier')) {
+      if (currentGhostPositions[0] > playerPosition) {
+        gameGrid[currentGhostPositions[0]].classList.remove('Ghost-Hunted')
+        currentGhostPositions[0] += width
+        gameGrid[currentGhostPositions[0]].classList.add('Ghost-Hunted')
+        // console.log(currentGhostPositions[0])
+      } else if (currentGhostPositions[0] < playerPosition) {
+        gameGrid[currentGhostPositions[0]].classList.remove('Ghost-Hunted')
+        currentGhostPositions[0] -= width
+        gameGrid[currentGhostPositions[0]].classList.add('Ghost-Hunted')
+        // console.log(currentGhostPositions[0])
+      }
+    } else {
+      console.log('This is the corner case')
+      if (currentGhostPositions[0] % width > playerPosition % width) {
+        gameGrid[currentGhostPositions[0]].classList.remove('Ghost-Hunted')
+        currentGhostPositions[0]++
+        gameGrid[currentGhostPositions[0]].classList.add('Ghost-Hunted')
+        // console.log(currentGhostPositions[0])
+      } else if (currentGhostPositions[0] % width < playerPosition % width) {
+        gameGrid[currentGhostPositions[0]].classList.remove('Ghost-Hunted')
+        currentGhostPositions[0]--
+        gameGrid[currentGhostPositions[0]].classList.add('Ghost-Hunted')
+        // console.log(currentGhostPositions[0])
+      } else {
+        if (currentGhostPositions[0] > playerPosition) {
+          if (!gameGrid[currentGhostPositions[0] + 1].classList.contains('barrier')) {
+            gameGrid[currentGhostPositions[0]].classList.remove('Ghost-Hunted')
+            currentGhostPositions[0]++
+            gameGrid[currentGhostPositions[0]].classList.add('Ghost-Hunted')
+          } else if (!gameGrid[currentGhostPositions[0] - 1].classList.contains('barrier')) {
+            gameGrid[currentGhostPositions[0]].classList.remove('Ghost-Hunted')
+            currentGhostPositions[0]--
+            gameGrid[currentGhostPositions[0]].classList.add('Ghost-Hunted')
+          }
+        } else if (currentGhostPositions[0] < playerPosition) {
+          if (!gameGrid[currentGhostPositions[0] + 1].classList.contains('barrier')) {
+            gameGrid[currentGhostPositions[0]].classList.remove('Ghost-Hunted')
+            currentGhostPositions[0]++
+            gameGrid[currentGhostPositions[0]].classList.add('Ghost-Hunted')
+          } else if (!gameGrid[currentGhostPositions[0] - 1].classList.contains('barrier')) {
+            gameGrid[currentGhostPositions[0]].classList.remove('Ghost-Hunted')
+            currentGhostPositions[0]--
+            gameGrid[currentGhostPositions[0]].classList.add('Ghost-Hunted')
+          }
+        }
+      }
+    }
+  }
+
 }
 
 window.addEventListener('DOMContentLoaded', init)
