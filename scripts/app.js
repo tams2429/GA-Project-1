@@ -5,13 +5,16 @@ function init() {
   //* Game Variables
   let playerPosition = 0 
   let playerTimerId = 0
-  let ghostTimerId = 0
+  // let ghostTimerId = 0
   let gameOverTimerId = 0
-  let hunterTimerId = 0
-  let transformTimeOutId = 0
+
   
   let startingGhostPositions = [362, 390, 391, 392] 
   let currentGhostPositions = [362, 390, 391, 392]
+
+  //* flashFoodEaten() variables
+  let hunterTimerId = 0
+  let transformTimeOutId = 0
 
   //* ghostAggroMove() variables
   let gameTimerId = 0
@@ -25,7 +28,25 @@ function init() {
   let scaredMoveIterator = 1
   let scaredMoveTimeOutId = 0
 
+  //? Creating Ghost Objects
+  //* Create a Ghost Class Constructor for the Ghost objects to be built from
+  class Ghost {
+    constructor(className, startIndex, speed) {
+      this.className = className
+      this.startIndex = startIndex
+      this.speed = speed
+      this.currentIndex = startIndex
+      this.timerId = NaN
+    }
+  }
 
+  //* Creating the 4 ghosts to have the same speed for now
+  const ghosts = [
+    new Ghost('ghostTop', 362, 500),
+    new Ghost('ghostLeft', 390, 500),
+    new Ghost('ghostMiddle', 391, 500),
+    new Ghost('ghostRight', 392, 500)
+  ]
 
   //?Creating grid
   //* Initialise an empty array to contain the PacMan grid 
@@ -41,66 +62,35 @@ function init() {
   //* Define a layout array, containing a series of numbers that represent the function of the squares (i.e. 0 = food, 1 = barrier, 2 = flashing food, 3 = 'Ghost' lair, 4 = 'Player start',)
   const layout =  [
     1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,
-    1, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 1,
-    1, 2, 1, 1, 1, 1, 1, 2, 1, 1, 1, 1, 1, 1, 2, 1, 1, 1, 1, 1, 1, 2, 1, 1, 1, 1, 1, 2, 1,
-    1, 2, 1, 1, 1, 1, 1, 2, 1, 1, 1, 1, 1, 1, 2, 1, 1, 1, 1, 1, 1, 2, 1, 1, 1, 1, 1, 2, 1,
-    1, 2, 1, 1, 1, 1, 1, 2, 1, 1, 1, 1, 1, 1, 2, 1, 1, 1, 1, 1, 1, 2, 1, 1, 1, 1, 1, 2, 1,
-    1, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 1,
-    1, 2, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 2, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 2, 1,
-    1, 2, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 2, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 2, 1,
-    1, 2, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 2, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 2, 1,
-    1, 2, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 2, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 2, 1,
-    1, 2, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 2, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 2, 1,
-    1, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 1,
-    1, 2, 1, 1, 1, 1, 1, 1, 1, 1, 1, 2, 1, 1, 3, 1, 1, 2, 1, 1, 1, 1, 1, 1, 1, 1, 1, 2, 1,
-    1, 2, 1, 1, 1, 1, 1, 1, 1, 1, 1, 2, 1, 3, 3, 3, 1, 2, 1, 1, 1, 1, 1, 1, 1, 1, 1, 2, 1,
-    1, 2, 1, 1, 1, 1, 1, 1, 1, 1, 1, 2, 1, 1, 1, 1, 1, 2, 1, 1, 1, 1, 1, 1, 1, 1, 1, 2, 1,
-    1, 2, 1, 1, 1, 1, 1, 1, 1, 1, 1, 2, 2, 2, 2, 2, 2, 2, 1, 1, 1, 1, 1, 1, 1, 1, 1, 2, 1,
-    1, 2, 1, 1, 1, 1, 1, 1, 1, 1, 1, 2, 1, 1, 1, 1, 1, 2, 1, 1, 1, 1, 1, 1, 1, 1, 1, 2, 1,
-    1, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 1,
-    1, 2, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 2, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 2, 1,
-    1, 2, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 2, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 2, 1,
-    1, 2, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 2, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 2, 1,
-    1, 2, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 2, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 2, 1,
-    1, 2, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 2, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 2, 1,
-    1, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 4, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 1,
-    1, 2, 1, 1, 1, 1, 1, 2, 1, 1, 1, 1, 1, 1, 2, 1, 1, 1, 1, 1, 1, 2, 1, 1, 1, 1, 1, 2, 1,
-    1, 2, 1, 1, 1, 1, 1, 2, 1, 1, 1, 1, 1, 1, 2, 1, 1, 1, 1, 1, 1, 2, 1, 1, 1, 1, 1, 2, 1,
-    1, 2, 1, 1, 1, 1, 1, 2, 1, 1, 1, 1, 1, 1, 2, 1, 1, 1, 1, 1, 1, 2, 1, 1, 1, 1, 1, 2, 1,
-    1, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 0, 1,
+    1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1,
+    1, 0, 1, 1, 1, 1, 1, 0, 1, 1, 1, 1, 1, 1, 0, 1, 1, 1, 1, 1, 1, 0, 1, 1, 1, 1, 1, 0, 1,
+    1, 0, 1, 1, 1, 1, 1, 0, 1, 1, 1, 1, 1, 1, 0, 1, 1, 1, 1, 1, 1, 0, 1, 1, 1, 1, 1, 0, 1,
+    1, 0, 1, 1, 1, 1, 1, 0, 1, 1, 1, 1, 1, 1, 0, 1, 1, 1, 1, 1, 1, 0, 1, 1, 1, 1, 1, 0, 1,
+    1, 2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2, 1,
+    1, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 1,
+    1, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 1,
+    1, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 1,
+    1, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 1,
+    1, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 1,
+    1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1,
+    1, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 1, 1, 3, 1, 1, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 1,
+    1, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 1, 3, 3, 3, 1, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 1,
+    1, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 1, 1, 1, 1, 1, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 1,
+    1, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 1,
+    1, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 1, 1, 1, 1, 1, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 1,
+    1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1,
+    1, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 1,
+    1, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 1,
+    1, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 1,
+    1, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 1,
+    1, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 1,
+    1, 2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 4, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2, 1,
+    1, 0, 1, 1, 1, 1, 1, 0, 1, 1, 1, 1, 1, 1, 0, 1, 1, 1, 1, 1, 1, 0, 1, 1, 1, 1, 1, 0, 1,
+    1, 0, 1, 1, 1, 1, 1, 0, 1, 1, 1, 1, 1, 1, 0, 1, 1, 1, 1, 1, 1, 0, 1, 1, 1, 1, 1, 0, 1,
+    1, 0, 1, 1, 1, 1, 1, 0, 1, 1, 1, 1, 1, 1, 0, 1, 1, 1, 1, 1, 1, 0, 1, 1, 1, 1, 1, 0, 1,
+    1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1,
     1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1
-  ]
-  // [
-  //   1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,
-  //   1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1,
-  //   1, 0, 1, 1, 1, 1, 1, 0, 1, 1, 1, 1, 1, 1, 0, 1, 1, 1, 1, 1, 1, 0, 1, 1, 1, 1, 1, 0, 1,
-  //   1, 0, 1, 1, 1, 1, 1, 0, 1, 1, 1, 1, 1, 1, 0, 1, 1, 1, 1, 1, 1, 0, 1, 1, 1, 1, 1, 0, 1,
-  //   1, 0, 1, 1, 1, 1, 1, 0, 1, 1, 1, 1, 1, 1, 0, 1, 1, 1, 1, 1, 1, 0, 1, 1, 1, 1, 1, 0, 1,
-  //   1, 2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2, 1,
-  //   1, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 1,
-  //   1, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 1,
-  //   1, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 1,
-  //   1, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 1,
-  //   1, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 1,
-  //   1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1,
-  //   1, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 1, 1, 3, 1, 1, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 1,
-  //   1, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 1, 3, 3, 3, 1, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 1,
-  //   1, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 1, 1, 1, 1, 1, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 1,
-  //   1, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 1,
-  //   1, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 1, 1, 1, 1, 1, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 1,
-  //   1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1,
-  //   1, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 1,
-  //   1, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 1,
-  //   1, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 1,
-  //   1, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 1,
-  //   1, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 1,
-  //   1, 2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 4, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2, 1,
-  //   1, 0, 1, 1, 1, 1, 1, 0, 1, 1, 1, 1, 1, 1, 0, 1, 1, 1, 1, 1, 1, 0, 1, 1, 1, 1, 1, 0, 1,
-  //   1, 0, 1, 1, 1, 1, 1, 0, 1, 1, 1, 1, 1, 1, 0, 1, 1, 1, 1, 1, 1, 0, 1, 1, 1, 1, 1, 0, 1,
-  //   1, 0, 1, 1, 1, 1, 1, 0, 1, 1, 1, 1, 1, 1, 0, 1, 1, 1, 1, 1, 1, 0, 1, 1, 1, 1, 1, 0, 1,
-  //   1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1,
-  //   1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1
-  // ]   
+  ]   
 
 
   
@@ -167,8 +157,17 @@ function init() {
     //* Add ghost positions here
     //!To add other ghost positions later
 
-    //* Adding 1st ghost to 'gameGrid'
-    gameGrid[currentGhostPositions[0]].classList.add('Ghost-Hunter')
+    //* Adding ghosts to 'gameGrid'
+    ghosts.forEach(ghost => {
+      gameGrid[ghost.currentIndex].classList.add('Ghost-Hunter')
+      gameGrid[ghost.currentIndex].classList.add(ghost.className)
+    })
+
+    //* Check both unique ghost classname and 'Ghost-Hunter' classes have been added to the grid
+    ghosts.forEach(ghost => {
+      console.log(gameGrid[ghost.currentIndex])
+    })
+    // gameGrid[currentGhostPositions[0]].classList.add('Ghost-Hunter')
   }
 
   // createGrid()
@@ -416,62 +415,62 @@ function init() {
 
 
   //?Ghost position and movement
-  //* Checking the first location of div with class 'ghost-lair'
-  const ghostEntranceIndex = gameGrid.findIndex(object => {
-    return object.className === 'ghost-lair'
-  })
+  // //* Checking the first location of div with class 'ghost-lair'
+  // const ghostEntranceIndex = gameGrid.findIndex(object => {
+  //   return object.className === 'ghost-lair'
+  // })
 
-  console.log('The Ghost Entrance is at index', ghostEntranceIndex)
-  //* Checking Position of 1st ghost (outside of lair) 
-  // currentGhostPositions[0] = ghostEntranceIndex - width
-
-
-
-  //* Defining array of possible movements for 'Ghost'
-  const ghostDirections = [1, -1, width, -width]
-
-
-  //* Define Event Listener Function to handle random directional 'Ghost' movements in response to player key being pressed
-
-  function ghostMove() {
-    // console.log('Ghost movement event function has been triggered')
-    //* Generate random movement from array 'ghostDirections' using Math object library
-    let randomDirection = ghostDirections[Math.floor(Math.random() * ghostDirections.length)]
-    // console.log(randomDirection)
+  // console.log('The Ghost Entrance is at index', ghostEntranceIndex)
+  // //* Checking Position of 1st ghost (outside of lair) 
+  // // currentGhostPositions[0] = ghostEntranceIndex - width
 
 
 
-    //* For 2nd event onwards, clear interval of earlier events
-    console.log(gameGrid[currentGhostPositions[0] + randomDirection].className)
-    if (gameGrid[currentGhostPositions[0] + randomDirection].className !== 'barrier') {
-      // console.log('GhostTimerId is', ghostTimerId)
-      clearInterval(ghostTimerId)
-      //* Use setInterval() to generate continuous movement 
-      ghostTimerId = setInterval(() => {
-        if (gameGrid[currentGhostPositions[0] + randomDirection].className !== 'barrier') {
-          // console.log('Ghost1position is', currentGhostPositions[0])
-          // gameGrid[currentGhostPositions[0]].classList.remove('Ghost-Hunter', 'Ghost-Hunted')
-          // currentGhostPositions[0] += randomDirection
+  // //* Defining array of possible movements for 'Ghost'
+  // const ghostDirections = [1, -1, width, -width]
+
+
+  // //* Define Event Listener Function to handle random directional 'Ghost' movements in response to player key being pressed
+
+  // function ghostMove() {
+  //   // console.log('Ghost movement event function has been triggered')
+  //   //* Generate random movement from array 'ghostDirections' using Math object library
+  //   let randomDirection = ghostDirections[Math.floor(Math.random() * ghostDirections.length)]
+  //   // console.log(randomDirection)
+
+
+
+  //   //* For 2nd event onwards, clear interval of earlier events
+  //   console.log(gameGrid[currentGhostPositions[0] + randomDirection].className)
+  //   if (gameGrid[currentGhostPositions[0] + randomDirection].className !== 'barrier') {
+  //     // console.log('GhostTimerId is', ghostTimerId)
+  //     clearInterval(ghostTimerId)
+  //     //* Use setInterval() to generate continuous movement 
+  //     ghostTimerId = setInterval(() => {
+  //       if (gameGrid[currentGhostPositions[0] + randomDirection].className !== 'barrier') {
+  //         // console.log('Ghost1position is', currentGhostPositions[0])
+  //         // gameGrid[currentGhostPositions[0]].classList.remove('Ghost-Hunter', 'Ghost-Hunted')
+  //         // currentGhostPositions[0] += randomDirection
           
-          //* Need to check if Ghost is currently Hunter or Hunted
-          if (gameGrid[currentGhostPositions[0]].classList.contains('Ghost-Hunted')) {
-            gameGrid[currentGhostPositions[0]].classList.remove('Ghost-Hunted')
-            currentGhostPositions[0] += randomDirection
-            gameGrid[currentGhostPositions[0]].classList.add('Ghost-Hunted')
-            console.log('New ghost position is added')
-          } else {
-            gameGrid[currentGhostPositions[0]].classList.remove('Ghost-Hunter')
-            currentGhostPositions[0] += randomDirection
-            gameGrid[currentGhostPositions[0]].classList.add('Ghost-Hunter')
-          }
-        }
-      }, ghostDelay)
-    } else {
-      return
-    }
+  //         //* Need to check if Ghost is currently Hunter or Hunted
+  //         if (gameGrid[currentGhostPositions[0]].classList.contains('Ghost-Hunted')) {
+  //           gameGrid[currentGhostPositions[0]].classList.remove('Ghost-Hunted')
+  //           currentGhostPositions[0] += randomDirection
+  //           gameGrid[currentGhostPositions[0]].classList.add('Ghost-Hunted')
+  //           console.log('New ghost position is added')
+  //         } else {
+  //           gameGrid[currentGhostPositions[0]].classList.remove('Ghost-Hunter')
+  //           currentGhostPositions[0] += randomDirection
+  //           gameGrid[currentGhostPositions[0]].classList.add('Ghost-Hunter')
+  //         }
+  //       }
+  //     }, ghostDelay)
+  //   } else {
+  //     return
+  //   }
     // console.log(gameGrid[currentGhostPositions[0] + randomDirection])
     // console.log(gameGrid[currentGhostPositions[0] + randomDirection].className)
-  }
+  // }
 
 
 
@@ -735,6 +734,8 @@ function init() {
 
 
   }
+
+
 
 }
 
