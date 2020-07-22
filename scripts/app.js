@@ -6,15 +6,15 @@ function init() {
   let playerPosition = 0 
   let playerTimerId = 0
   let ghostTimerId = 0
-  let gameTimerId = 0
   let gameOverTimerId = 0
   let hunterTimerId = 0
   let transformTimeOutId = 0
-  let scaredMoveTimeOutId = 0
+  
   let startingGhostPositions = [362, 390, 391, 392] 
   let currentGhostPositions = [362, 390, 391, 392]
 
   //* ghostAggroMove() variables
+  let gameTimerId = 0
   let distances = []
   let chosenMove = 0
   let playerDummyPositions = [330, 336, 510, 504]
@@ -23,6 +23,7 @@ function init() {
   //* ghostScaredMove() variables
   let playerHomingPosition = playerDummyPositions[0]
   let scaredMoveIterator = 1
+  let scaredMoveTimeOutId = 0
 
 
 
@@ -478,6 +479,12 @@ function init() {
       //* Send eaten Ghost back to lair & lair entrance + transform back into 'Ghost-Hunter'
       gameGrid[startingGhostPositions[0]].classList.add('Ghost-Hunter')
       currentGhostPositions[0] = startingGhostPositions[0]
+
+      //* Reset iterator for ghostAggroMove() so ghosts sent back to lair, can come out of lair again
+      iterator = 0
+
+      //* Start ghostAggroMove() when ghosts are sent back and becomes 'Ghost-Hunter' class again
+      gameTimerId = setInterval(ghostAggroMove, startDelay)
     } 
 
   }
@@ -489,6 +496,7 @@ function init() {
 
   function flashFoodEaten() {
     // console.log('Flash food function has been invoked')
+    console.log(currentGhostPositions)
     //* If statement to check if 'flashing-food' class exists in position the player is moving in, if true, remove 'flashing-food' class and add 5000 points
     if (gameGrid[playerPosition].classList.contains('flashing-food')) {
 
@@ -498,66 +506,43 @@ function init() {
       gameGrid[playerPosition].classList.remove('Player-Hunted')
       gameGrid[playerPosition].classList.add('Player-Hunter')
 
-      scoreNum += 5000
-      score.innerHTML = scoreNum
-      //* Reset 'currentGhostPosition' to an empty array after everytime of eating 'flashing-food'
-      currentGhostPositions = []
-      //*For loop to output ghost position index in 'gameGrid' to an array, 'currentGhostPosition' at time of eating 'flashing-food'
-      
-      // clearInterval(hunterTimerId)
-      for (let i = 0; i < gameGrid.length; i++) {
-        if (gameGrid[i].classList.contains('Ghost-Hunter')) {
-          currentGhostPositions.push(i)
-          console.log(currentGhostPositions)
-          gameGrid[i].classList.remove('Ghost-Hunter')
-          gameGrid[i].classList.add('Ghost-Hunted')
-        } else if (gameGrid[i].classList.contains('Ghost-Hunted')) {
-          currentGhostPositions.push(i)
-          console.log(currentGhostPositions)
-        }
+      //* Changing ghost class from 'Ghost-Hunter' to 'Ghost-Hunted'
+      if (gameGrid[currentGhostPositions[0]].classList.contains('Ghost-Hunter')) {
+        gameGrid[currentGhostPositions[0]].classList.remove('Ghost-Hunter')
+        gameGrid[currentGhostPositions[0]].classList.add('Ghost-Hunted')
       }
 
-      //* Add setInterval with captureGhost() that will detect 'if' there is collision between converted players and ghosts + add points + send ghosts back to original location
-      hunterTimerId = setInterval(captureGhosts, 10)
-
-      //* Add setTimeout with a logic that reverts everything back i.e. 'Ghost-Hunted' to 'Ghost-Hunter' & 'Player-Hunter' to 'Player-Hunted', within setTimout() add functionality to clear setInterval(captureGhost)
-      //!Change from clearInterval() to clearTimeout(?
-      clearInterval(transformTimeOutId)
-      transformTimeOutId = setTimeout(() => {
-        //*Transform Player class back from 'Player-Hunter' back to 'Player-Hunted'
-        gameGrid[playerPosition].classList.remove('Player-Hunter')
-        gameGrid[playerPosition].classList.add('Player-Hunted')
-
-        //* Transform Ghost class back from 'Ghost-Hunted' back to 'Ghost-Hunter'
-        for (let i = 0; i < gameGrid.length; i++) {
-          if (gameGrid[i].classList.contains('Ghost-Hunted')) {
-            currentGhostPositions.push(i)
-            console.log(currentGhostPositions)
-            gameGrid[i].classList.remove('Ghost-Hunted')
-            gameGrid[i].classList.add('Ghost-Hunter')
-          } else if (gameGrid[i].classList.contains('Ghost-Hunter')) {
-            currentGhostPositions.push(i)
-            console.log(currentGhostPositions)
-          }
-        }
-      }, 100000)
+      scoreNum += 5000
+      score.innerHTML = scoreNum
       
-      //* Clear Interval to stop ghostAggroMove() and any ghostScaredMove() (from eating prior flashing foods)
+      //* Clear Interval to stop ghostAggroMove() and any ghostScaredMove() (from prior flashing foods)
       clearInterval(gameTimerId)
       clearInterval(scaredMoveTimeOutId)
 
       //* Start ghostScaredMove() after eating flashing food
       scaredMoveTimeOutId = setInterval(ghostScaredMove, startDelay)
 
-      //* After 10 seconds, setTimeout(), to clear any ghostScaredMove() and restart ghostAggroMove() by setting interval
-      // setTimeout(() => {
-      //   clearInterval(scaredMoveTimeOutId)
-      //   gameTimerId = setInterval(ghostAggroMove, startDelay)
-      // }, 10000)
-      //! Clear interval for ghostAggroMove()?
-      //! Clear interval for ghostScaredMove()?
-      //! Add setInterval for ghostScaredMove()? (How do we stop after transform back? add ClearInterval within setTimeout function above? and restart setInterval for ghostAggroMove()?)
+      //* Add setInterval with captureGhost() that will detect 'if' there is collision between converted players and ghosts + add points + send ghosts back to original location
+      hunterTimerId = setInterval(captureGhosts, 10)
 
+      //* Add setTimeout with a logic that reverts everything back i.e. 'Ghost-Hunted' to 'Ghost-Hunter' & 'Player-Hunter' to 'Player-Hunted', within setTimout() add functionality to clear setInterval(captureGhost)
+      clearTimeout(transformTimeOutId)
+      transformTimeOutId = setTimeout(() => {
+        //*Transform Player class back from 'Player-Hunter' back to 'Player-Hunted'
+        gameGrid[playerPosition].classList.remove('Player-Hunter')
+        gameGrid[playerPosition].classList.add('Player-Hunted')
+
+        //* Transform Ghost class back from 'Ghost-Hunted' back to 'Ghost-Hunter'
+        if (gameGrid[currentGhostPositions[0]].classList.contains('Ghost-Hunted')) {
+          gameGrid[currentGhostPositions[0]].classList.remove('Ghost-Hunted')
+          gameGrid[currentGhostPositions[0]].classList.add('Ghost-Hunter')
+        }
+
+        //* Stop ghostScaredMove() and start interval for ghostAggroMove() again after ghosts are transformed back to 'Ghost-Hunter' class
+        clearInterval(scaredMoveTimeOutId)
+        clearInterval(gameTimerId)
+        gameTimerId = setInterval(ghostAggroMove, startDelay)
+      }, 10000)
     } else {
       return
     }
@@ -589,7 +574,7 @@ function init() {
       for (let i = 0; i < possibleGhostMoves.length; i++) {
         if (Math.abs(ghostInitialPosition - playerDummyPosition) > Math.abs((ghostInitialPosition + possibleGhostMoves[i]) - playerDummyPosition)) {
           // console.log('The ghost will move by', possibleGhostMoves[i])
-          console.log('Valid moves are', possibleGhostMoves[i])
+          // console.log('Valid moves are', possibleGhostMoves[i])
           //*If new move reduces distance between the ghost and the target position, check if this new location has a barrier or not, if no barrier, then push this new distance into the distances array (which contains only the new reduced distances that do not encounter a barrier)
           if (!gameGrid[ghostInitialPosition + possibleGhostMoves[i]].classList.contains('barrier')) {
             distances.push(Math.abs((ghostInitialPosition + possibleGhostMoves[i]) - playerDummyPosition))
@@ -612,7 +597,7 @@ function init() {
       for (let i = 0; i < possibleGhostMoves.length; i++) {
         if (Math.abs(ghostInitialPosition - playerPosition) > Math.abs((ghostInitialPosition + possibleGhostMoves[i]) - playerPosition)) {
           // console.log('The ghost will move by', possibleGhostMoves[i])
-          console.log('Valid moves are', possibleGhostMoves[i])
+          // console.log('Valid moves are', possibleGhostMoves[i])
           //*If new move reduces distance between the ghost and the player, check if this new location has a barrier or not, if no barrier, then push this new distance into the distances array (which contains only the new reduced distances that do not encounter a barrier)
           if (!gameGrid[ghostInitialPosition + possibleGhostMoves[i]].classList.contains('barrier')) {
             distances.push(Math.abs((ghostInitialPosition + possibleGhostMoves[i]) - playerPosition))
@@ -620,7 +605,7 @@ function init() {
             //*For loop and if statement to check if current value of distances is less than other distance values that also reduce the distance and do not have a barrier
             for (let j = 0; j < distances.length; j++) {
               if (distances.length === 1) {
-                console.log('for loop run')
+                // console.log('for loop run')
                 chosenMove = possibleGhostMoves[i]
               } else if (distances[j] < distances [j - 1]) {
                 chosenMove = possibleGhostMoves[i]
@@ -637,9 +622,15 @@ function init() {
     // console.log('Chosen Move is', chosenMove)
 
     //* Once chosenMove has been defined, apply the move
-    gameGrid[currentGhostPositions[0]].classList.remove('Ghost-Hunter')
-    currentGhostPositions[0] += chosenMove
-    gameGrid[currentGhostPositions[0]].classList.add('Ghost-Hunter')
+    //* Apply only if the ghost has class 'Ghost-Hunter'
+    if (gameGrid[currentGhostPositions[0]].classList.contains('Ghost-Hunter')) {
+      gameGrid[currentGhostPositions[0]].classList.remove('Ghost-Hunter')
+      currentGhostPositions[0] += chosenMove
+      gameGrid[currentGhostPositions[0]].classList.add('Ghost-Hunter')
+    }
+    // gameGrid[currentGhostPositions[0]].classList.remove('Ghost-Hunter')
+    // currentGhostPositions[0] += chosenMove
+    // gameGrid[currentGhostPositions[0]].classList.add('Ghost-Hunter')
 
     //* reset 'distances' array
     distances = []
@@ -668,7 +659,7 @@ function init() {
       for (let i = 0; i < possibleGhostMoves.length; i++) {
         if (Math.abs(currentGhostPositions[0] - playerHomingPosition) > Math.abs((currentGhostPositions[0] + possibleGhostMoves[i]) - playerHomingPosition)) {
           // console.log('The ghost will move by', possibleGhostMoves[i])
-          console.log('Valid moves are', possibleGhostMoves[i])
+          // console.log('Valid moves are', possibleGhostMoves[i])
           //*If new move reduces distance between the ghost and the homing position, check if this new location has a barrier or not, if no barrier, then push this new distance into the distances array (which contains only the new reduced distances that do not encounter a barrier)
           if (!gameGrid[currentGhostPositions[0] + possibleGhostMoves[i]].classList.contains('barrier')) {
             distances.push(Math.abs((currentGhostPositions[0] + possibleGhostMoves[i]) - playerHomingPosition))
@@ -692,9 +683,15 @@ function init() {
     }
 
     //* Once chosenMove has been defined, apply the move
-    gameGrid[currentGhostPositions[0]].classList.remove('Ghost-Hunted')
-    currentGhostPositions[0] += chosenMove
-    gameGrid[currentGhostPositions[0]].classList.add('Ghost-Hunted')
+    //* Apply only if the ghost has class 'Ghost-Hunted'
+    if (gameGrid[currentGhostPositions[0]].classList.contains('Ghost-Hunted')) {
+      gameGrid[currentGhostPositions[0]].classList.remove('Ghost-Hunted')
+      currentGhostPositions[0] += chosenMove
+      gameGrid[currentGhostPositions[0]].classList.add('Ghost-Hunted')
+    }
+    // gameGrid[currentGhostPositions[0]].classList.remove('Ghost-Hunted')
+    // currentGhostPositions[0] += chosenMove
+    // gameGrid[currentGhostPositions[0]].classList.add('Ghost-Hunted')
 
     //* reset 'distances' array
     distances = []
