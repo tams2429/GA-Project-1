@@ -73,7 +73,7 @@ function init() {
     1, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 1,
     1, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 1,
     1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1,
-    1, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 1, 1, 3, 1, 1, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 1,
+    1, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 1, 3, 3, 3, 1, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 1,
     1, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 1, 3, 3, 3, 1, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 1,
     1, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 1, 1, 1, 1, 1, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 1,
     1, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 1,
@@ -132,7 +132,7 @@ function init() {
   //* Create function that is used to create the grid
   function createGrid() {
     //* Interact with DOM to create new div elements to represent grid squares within existing 'grid-container' div + Populate 'gameGrid' array with new divs
-    console.log(typeof(document.createElement('div')))
+    // console.log(typeof(document.createElement('div')))
     // console.log('function createGrid has been invoked')
     for (let i = 0; i < layout.length; i++) {
       const square = document.createElement('div')
@@ -164,9 +164,9 @@ function init() {
     })
 
     //* Check both unique ghost classname and 'Ghost-Hunter' classes have been added to the grid
-    ghosts.forEach(ghost => {
-      console.log(gameGrid[ghost.currentIndex])
-    })
+    // ghosts.forEach(ghost => {
+    //   console.log(gameGrid[ghost.currentIndex])
+    // })
     // gameGrid[currentGhostPositions[0]].classList.add('Ghost-Hunter')
   }
 
@@ -186,8 +186,13 @@ function init() {
     createGrid()
     // gameTimerId = setInterval(ghostMove, startDelay)
 
+    //*Passing each ghost object into the ghostAggroMove()
+    ghosts.forEach(ghost => ghostAggroMove(ghost))
+    
+
+
     //! To reinstate after new function is tested
-    gameTimerId = setInterval(ghostAggroMove, startDelay)
+    // gameTimerId = setInterval(ghostAggroMove, startDelay)
     //* Keep time delay for iterations of capturePlayer() as low as possible, to initiate game over as soon as 'Player-Hunted' hits 'Ghost-Hunter'
     gameOverTimerId = setInterval(capturePlayer, 10)
     //* Add setInterval for iterations of captureGhost() as low as possible, in order to detect collisions and send 'Ghosts' back to lair 
@@ -593,16 +598,37 @@ function init() {
   //! To customise 'iterator' and 'playerDummyPosition' for different ghosts 
   //! i.e. LHS ghost, iterator <= 6, playerDummyPosition[1]
   //! i.e. Middle ghost, iterator <= 5, playerDummyPosition[0]
-  //! i.e. RHS ghost, iterator <= 6, playerDummyPosition [1]
+  //! i.e. RHS ghost, iterator <= 6, playerDummyPosition [0]
 
-  function ghostAggroMove() {
+  function ghostAggroMove(ghost) {
     
-    let ghostInitialPosition = currentGhostPositions[0]
-    const playerDummyPosition = playerDummyPositions[0]
+    let ghostInitialPosition = ghost.currentIndex
+    // console.log('The current ghost is', ghost.className)
+    // console.log('The starting position is', ghost.currentIndex)
+    let playerDummyPosition = playerDummyPositions[0]
+    let iteratorLimit = 3
+
+    //*Assigning different 'playerDummyPositions' and iterator limits based on different ghosts
+    if (ghost.className === 'ghostTop') {
+      playerDummyPosition = playerDummyPositions[0]
+      iteratorLimit = 3 
+    } else if (ghost.className === 'ghostMiddle') {
+      playerDummyPosition = playerDummyPositions[0]
+      iteratorLimit = 5
+    } else if (ghost.className === 'ghostRight') {
+      playerDummyPosition = playerDummyPositions[0]
+      iteratorLimit = 6 
+    } else if (ghost.className === 'ghostLeft') {
+      playerDummyPosition = playerDummyPositions[1]
+      iteratorLimit = 6 
+    }
+
+
+    // const playerDummyPosition = playerDummyPositions[0]
 
     //* First, if statement addresses ghosts that are still in ghost lair (by comparing with the ghost position with a location directly outside the ghost lair and checking the move iterations that has elapsed) (i.e. if it hasn't reached outside of the lair after the first few moves continue to home out of the lair)
     //* Therefore, 1st if statement is to help the ghost to home in to a location directly outside of the lair and escape
-    if (ghostInitialPosition !== playerDummyPosition && iterator <= 3) {
+    if (ghostInitialPosition !== playerDummyPosition && iterator <= iteratorLimit) {
       for (let i = 0; i < possibleGhostMoves.length; i++) {
         if (Math.abs(ghostInitialPosition - playerDummyPosition) > Math.abs((ghostInitialPosition + possibleGhostMoves[i]) - playerDummyPosition)) {
           // console.log('The ghost will move by', possibleGhostMoves[i])
@@ -655,10 +681,13 @@ function init() {
 
     //* Once chosenMove has been defined, apply the move
     //* Apply only if the ghost has class 'Ghost-Hunter'
-    if (gameGrid[currentGhostPositions[0]].classList.contains('Ghost-Hunter')) {
-      gameGrid[currentGhostPositions[0]].classList.remove('Ghost-Hunter')
-      currentGhostPositions[0] += chosenMove
-      gameGrid[currentGhostPositions[0]].classList.add('Ghost-Hunter')
+    if (gameGrid[ghost.currentIndex].classList.contains('Ghost-Hunter')) {
+      gameGrid[ghost.currentIndex].classList.remove('Ghost-Hunter')
+      gameGrid[ghost.currentIndex].classList.remove(ghost.className)
+      ghost.currentIndex += chosenMove
+      console.log('Chosen move is', chosenMove)
+      gameGrid[ghost.currentIndex].classList.add('Ghost-Hunter')
+      gameGrid[ghost.currentIndex].classList.add(ghost.className)
     }
     // gameGrid[currentGhostPositions[0]].classList.remove('Ghost-Hunter')
     // currentGhostPositions[0] += chosenMove
@@ -675,7 +704,86 @@ function init() {
     // console.log(iterator)
   }
 
+  //? Back up ghostAggroMove()
+  // function ghostAggroMove() {
+    
+  //   let ghostInitialPosition = currentGhostPositions[0]
+  //   const playerDummyPosition = playerDummyPositions[0]
 
+  //   //* First, if statement addresses ghosts that are still in ghost lair (by comparing with the ghost position with a location directly outside the ghost lair and checking the move iterations that has elapsed) (i.e. if it hasn't reached outside of the lair after the first few moves continue to home out of the lair)
+  //   //* Therefore, 1st if statement is to help the ghost to home in to a location directly outside of the lair and escape
+  //   if (ghostInitialPosition !== playerDummyPosition && iterator <= 3) {
+  //     for (let i = 0; i < possibleGhostMoves.length; i++) {
+  //       if (Math.abs(ghostInitialPosition - playerDummyPosition) > Math.abs((ghostInitialPosition + possibleGhostMoves[i]) - playerDummyPosition)) {
+  //         // console.log('The ghost will move by', possibleGhostMoves[i])
+  //         // console.log('Valid moves are', possibleGhostMoves[i])
+  //         //*If new move reduces distance between the ghost and the target position, check if this new location has a barrier or not, if no barrier, then push this new distance into the distances array (which contains only the new reduced distances that do not encounter a barrier)
+  //         if (!gameGrid[ghostInitialPosition + possibleGhostMoves[i]].classList.contains('barrier')) {
+  //           distances.push(Math.abs((ghostInitialPosition + possibleGhostMoves[i]) - playerDummyPosition))
+  
+  //           //*For loop and if statement to check if current value of distances is less than other distance values that also reduce the distance and do not have a barrier
+  //           for (let j = 0; j < distances.length; j++) {
+  //             if (distances.length === 1) {
+  //               // console.log('for loop run')
+  //               chosenMove = possibleGhostMoves[i]
+  //             } else if (distances[j] < distances [j - 1] ) {
+  //               chosenMove = possibleGhostMoves[i]
+  //             }
+  //           }
+  //         }
+  //       }
+  //     }
+
+  //     //* Else statement is to help ghost chase player, after the ghost has escaped the ghost lair
+  //   } else {
+  //     for (let i = 0; i < possibleGhostMoves.length; i++) {
+  //       if (Math.abs(ghostInitialPosition - playerPosition) > Math.abs((ghostInitialPosition + possibleGhostMoves[i]) - playerPosition)) {
+  //         // console.log('The ghost will move by', possibleGhostMoves[i])
+  //         // console.log('Valid moves are', possibleGhostMoves[i])
+  //         //*If new move reduces distance between the ghost and the player, check if this new location has a barrier or not, if no barrier, then push this new distance into the distances array (which contains only the new reduced distances that do not encounter a barrier)
+  //         if (!gameGrid[ghostInitialPosition + possibleGhostMoves[i]].classList.contains('barrier')) {
+  //           distances.push(Math.abs((ghostInitialPosition + possibleGhostMoves[i]) - playerPosition))
+  
+  //           //*For loop and if statement to check if current value of distances is less than other distance values that also reduce the distance and do not have a barrier
+  //           for (let j = 0; j < distances.length; j++) {
+  //             if (distances.length === 1) {
+  //               // console.log('for loop run')
+  //               chosenMove = possibleGhostMoves[i]
+  //             } else if (distances[j] < distances [j - 1]) {
+  //               chosenMove = possibleGhostMoves[i]
+  //             }
+  //           }
+  //         }
+  //       }
+  //     }
+  //   }
+
+
+
+  //   // console.log('Valid distances are', distances)
+  //   // console.log('Chosen Move is', chosenMove)
+
+  //   //* Once chosenMove has been defined, apply the move
+  //   //* Apply only if the ghost has class 'Ghost-Hunter'
+  //   if (gameGrid[currentGhostPositions[0]].classList.contains('Ghost-Hunter')) {
+  //     gameGrid[currentGhostPositions[0]].classList.remove('Ghost-Hunter')
+  //     currentGhostPositions[0] += chosenMove
+  //     gameGrid[currentGhostPositions[0]].classList.add('Ghost-Hunter')
+  //   }
+  //   // gameGrid[currentGhostPositions[0]].classList.remove('Ghost-Hunter')
+  //   // currentGhostPositions[0] += chosenMove
+  //   // gameGrid[currentGhostPositions[0]].classList.add('Ghost-Hunter')
+
+  //   //* reset 'distances' array
+  //   distances = []
+  //   //* reset 'chosenMove' 
+  //   chosenMove = 0
+
+  //   //* increase Iterator (for use to get ghosts out of lair)
+  //   //! Might need to reset iterator after ghosts sent back to lair?
+  //   iterator++
+  //   // console.log(iterator)
+  // }
 
 
 
