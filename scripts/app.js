@@ -583,14 +583,14 @@ function init() {
     let ghostInitialPosition = currentGhostPositions[0]
     const playerDummyPosition = playerDummyPositions[0]
 
-    //* First, if statement checks if ghost is still in lair
-
+    //* First, if statement addresses ghosts that are still in ghost lair (by comparing with the ghost position with a location directly outside the ghost lair and checking the move iterations that has elapsed) (i.e. if it hasn't reached outside of the lair after the first few moves continue to home out of the lair)
+    //* Therefore, 1st if statement is to help the ghost to home in to a location directly outside of the lair and escape
     if (ghostInitialPosition !== playerDummyPosition && iterator <= 3) {
       for (let i = 0; i < possibleGhostMoves.length; i++) {
         if (Math.abs(ghostInitialPosition - playerDummyPosition) > Math.abs((ghostInitialPosition + possibleGhostMoves[i]) - playerDummyPosition)) {
           // console.log('The ghost will move by', possibleGhostMoves[i])
           console.log('Valid moves are', possibleGhostMoves[i])
-          //*If new move reduces distance between the ghost and the player, check if this new location has a barrier or not, if no barrier, then push this new distance into the distances array (which contains only the new reduced distances that do not encounter a barrier)
+          //*If new move reduces distance between the ghost and the target position, check if this new location has a barrier or not, if no barrier, then push this new distance into the distances array (which contains only the new reduced distances that do not encounter a barrier)
           if (!gameGrid[ghostInitialPosition + possibleGhostMoves[i]].classList.contains('barrier')) {
             distances.push(Math.abs((ghostInitialPosition + possibleGhostMoves[i]) - playerDummyPosition))
   
@@ -606,6 +606,8 @@ function init() {
           }
         }
       }
+
+      //* Else statement is to help ghost chase player, after the ghost has escaped the ghost lair
     } else {
       for (let i = 0; i < possibleGhostMoves.length; i++) {
         if (Math.abs(ghostInitialPosition - playerPosition) > Math.abs((ghostInitialPosition + possibleGhostMoves[i]) - playerPosition)) {
