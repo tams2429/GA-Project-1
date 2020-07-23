@@ -7,6 +7,7 @@ function init() {
   let playerTimerId = 0
   // let ghostTimerId = 0
   let gameOverTimerId = 0
+  let restart = true
 
   
   let startingGhostPositions = [362, 390, 391, 392] 
@@ -39,6 +40,7 @@ function init() {
       this.aggroMoveTimerId = NaN
       this.scaredMoveTimerId = NaN
       this.hunterTimerId = NaN
+      this.gameOverTimerId =NaN
       this.aggroMoveIterator = 0
     }
   }
@@ -189,15 +191,17 @@ function init() {
     createGrid()
     // gameTimerId = setInterval(ghostMove, startDelay)
 
-    //*Passing each ghost object into the ghostAggroMove()
+    //*Passing each ghost object into the ghostAggroMove() 
     ghosts.forEach(ghost => ghostAggroMove(ghost))
     
 
+    //* Passing each ghost object into the capturePlayer()
+    ghosts.forEach(ghost => capturePlayer(ghost))
 
     //! To reinstate after new function is tested
     // gameTimerId = setInterval(ghostAggroMove, startDelay)
-    //* Keep time delay for iterations of capturePlayer() as low as possible, to initiate game over as soon as 'Player-Hunted' hits 'Ghost-Hunter'
-    gameOverTimerId = setInterval(capturePlayer, 10)
+    // //* Keep time delay for iterations of capturePlayer() as low as possible, to initiate game over as soon as 'Player-Hunted' hits 'Ghost-Hunter'
+    // gameOverTimerId = setInterval(capturePlayer, 10)
     //* Add setInterval for iterations of captureGhost() as low as possible, in order to detect collisions and send 'Ghosts' back to lair 
  
 
@@ -487,36 +491,44 @@ function init() {
 
   //? Function to check whether Ghosts have captured Player
 
-  function capturePlayer() {
+  function capturePlayer(ghost) {
     // console.log('The capturePlayer function has been invoked')
-    if (gameGrid[playerPosition].classList.contains('Ghost-Hunter')) {
-      clearInterval(gameTimerId)
-      // clearInterval(ghostTimerId)
-      clearInterval(gameOverTimerId)
-      clearInterval(playerTimerId)
-      document.removeEventListener('keyup', handlePlayerMove)
-      setTimeout(() => {
-        window.alert(`Game Over!, your score is ${scoreNum}`)
-        const restart = window.confirm('Do you wish to play again?')
-        if (restart) {
-          location.reload()
-        } else {
-          return
-        }
-      },500)
-    }
+    
+
+    ghost.gameOverTimerId = setInterval(function() {
+      if (playerPosition === ghost.currentIndex && gameGrid[playerPosition].classList.contains('Ghost-Hunter')) {
+        // console.log('Ghost hunter is', ghost.className)
+        clearInterval(ghost.aggroMoveTimerId)
+        clearInterval(ghost.scaredMoveTimeOutId)
+        clearInterval(playerTimerId)
+        document.removeEventListener('keyup', handlePlayerMove)
+        setTimeout(() => {
+          window.alert(`Game Over! your score is ${scoreNum}`)
+          restart = window.confirm('Do you wish to play again?')
+          if (restart) {
+            location.reload()
+          } else {
+            return
+          }
+        },500)
+        clearInterval(ghost.gameOverTimerId)
+      } else if (restart === false) {
+        //* This 'Else' case is to make sure that if player doesn't click to play again, the other ghosts will also stop moving
+        clearInterval(ghost.aggroMoveTimerId)
+        clearInterval(ghost.scaredMoveTimeOutId)
+      }
+    }, 10)
+    
   }
 
   //? Function to check whether Player have captured Ghosts
 
-  function captureGhosts() {
+  function captureGhosts(ghost) {
     // console.log('The captureGhost function has been invoked')
-    
-    ghosts.forEach(ghost => {
-      // console.log(ghost)
-      // console.log(gameGrid[playerPosition].classList)
+
+    ghost.hunterTimerId = setInterval(function() {
       if (ghost.currentIndex === playerPosition) {
-        console.log('Ghost being sent back is', ghost.className)
+        // console.log('Ghost being sent back is', ghost.className)
         gameGrid[playerPosition].classList.remove('Ghost-Hunted')
         gameGrid[playerPosition].classList.remove(ghost.className)
         scoreNum += 10000
@@ -531,11 +543,11 @@ function init() {
         ghost.aggroMoveIterator = 0
   
         //* Start ghostAggroMove() when ghosts are sent back and becomes 'Ghost-Hunter' class again
-        
         ghostAggroMove(ghost)
-  
+        //* After ghosts are sent back, stop captureGhosts() for that particular ghost otherwise when it collides as a Hunter, a new ghost hunter will be added back in the ghost lair since this function will still be active for that ghost
+        clearInterval(ghost.hunterTimerId)
       } 
-    })
+    }, 10)
 
   }
 
@@ -590,7 +602,9 @@ function init() {
         //* Clear Interval to stop ghostAggroMove() and any ghostScaredMove() (from prior flashing foods)
         clearInterval(ghost.aggroMoveTimerId)
         clearInterval(ghost.scaredMoveTimerId)
+        clearInterval(ghost.hunterTimerId)
         ghostScaredMove(ghost)
+        captureGhosts(ghost)
       })
 
       
@@ -609,7 +623,8 @@ function init() {
       //   captureGhosts(ghost)
       // })
 
-      hunterTimerId = setInterval(captureGhosts, 10)
+      // hunterTimerId = setInterval(captureGhosts, 100)
+      
 
 
       //* Add setTimeout with a logic that reverts everything back i.e. 'Ghost-Hunted' to 'Ghost-Hunter' & 'Player-Hunter' to 'Player-Hunted', within setTimout() add functionality to clear setInterval(captureGhost)
@@ -628,6 +643,7 @@ function init() {
           }
           clearInterval(ghost.scaredMoveTimerId)
           clearInterval(ghost.aggroMoveTimerId)
+          clearInterval(ghost.hunterTimerId)
           ghostAggroMove(ghost)
         })
 
@@ -871,8 +887,8 @@ function init() {
         ghost.currentIndex += chosenMove
         gameGrid[ghost.currentIndex].classList.add('Ghost-Hunted')
         gameGrid[ghost.currentIndex].classList.add(ghost.className)
-        console.log('The ghost classname is', ghost.className)
-        console.log('The ghost index is', ghost.currentIndex)
+        // console.log('The ghost classname is', ghost.className)
+        // console.log('The ghost index is', ghost.currentIndex)
       }
       // gameGrid[ghost.currentIndex].classList.remove('Ghost-Hunted')
       // ghost.currentIndex += chosenMove
