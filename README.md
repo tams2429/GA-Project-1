@@ -61,3 +61,9 @@ This repo contains the 1st project (Make a Game) after module 1 of GA SEI Bootca
 * Add score if 'Ghost-Hunted' is within the player square + send ghost back to lair + change ghost class back from 'Ghost-Hunted' to 'Ghost-Hunter'
 
 ### Add logic for Ghost to move incrementally closer to Player
+
+## Nice to have features
+* High score:
+  * Use if statement to check whether the current score is larger than the previous score, if true, reassign high score with current score,
+* Difficulty setting:
+  * Using 'click' event listener attached to buttons representing the 3 difficulties, the function will change the speeds of the player and the ghosts based on selected difficulty (i.e. higher speed => higher difficulty)
