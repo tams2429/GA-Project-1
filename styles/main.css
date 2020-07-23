@@ -43,7 +43,8 @@ body {
 }
 
 .barrier {
-  background-color: blue;
+  background-color: lightcoral;
+  border: 1px solid indianred
 }
 
 .flashing-food {
@@ -56,12 +57,12 @@ body {
 }
 
 .Player-Hunted{
-  background-image: url(../images/bulbasaur.png);
+  background-image: url(../images/charmander.png);
   object-fit: contain;
 }
 
 .Player-Hunter{
-  background-image: url(../images/venusaur.png);
+  background-image: url(../images/charizard.png);
   object-fit: cover;
 }
 

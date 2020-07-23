@@ -1,5 +1,18 @@
 function init() {
 
+  //* Audio files
+  const eating = new Audio('./sounds/inGame/eating3.mp3')
+  const evolution = new Audio('./sounds/inGame/evolution1.mp3')
+  const charmander = new Audio('./sounds/characters/charmander.mp3')
+  const squirtle = new Audio('./sounds/characters/squirtle.mp3')
+  const bulbasaur = new Audio('./sounds/characters/bulbasaur.mp3')
+  const charizard = new Audio('./sounds/characters/charizard.mp3')
+  const blastoise = new Audio('./sounds/characters/blastoise.mp3')
+  const venusaur = new Audio('./sounds/characters/venusaur.mp3')
+  const gastly = new Audio('./sounds/characters/gastly.mp3')
+  
+
+
   // console.log('This page has finished loading and JS is hooked')
 
   //* Game Variables
@@ -361,6 +374,7 @@ function init() {
   //* Create function to remove the food class + update score (+2000 for each food eaten), for invocation within the handlePlayerMove() function
   function foodsEaten() {
     if (gameGrid[playerPosition].classList.contains('food')) {
+      eating.play()
       gameGrid[playerPosition].classList.remove('food')
       scoreNum += 2000
       score.innerHTML = scoreNum
@@ -546,32 +560,63 @@ function init() {
   function flashFoodEaten() {
     // console.log('Flash food function has been invoked')
     // console.log(currentGhostPositions)
+    
+
     //* If statement to check if 'flashing-food' class exists in position the player is moving in, if true, remove 'flashing-food' class and add 5000 points
     if (gameGrid[playerPosition].classList.contains('flashing-food')) {
 
       gameGrid[playerPosition].classList.remove('flashing-food')
+
+      //* Add evolution music as flashing food is removed
+      evolution.play()
       scoreNum += 5000
       score.innerHTML = scoreNum
 
-      //* Changing Player class from 'Player-Hunted' to 'Player-Hunter'
-      gameGrid[playerPosition].classList.remove('Player-Hunted')
-      gameGrid[playerPosition].classList.add('Player-Hunter')
-
-      //* Changing ghost class from 'Ghost-Hunter' to 'Ghost-Hunted'
-      //* For each ghost object change class to hunted and clearInterval for each timerId for ghostAggroMove(), ghostScaredMove(), captureGhosts()
-      //* Invoke the ghostScaredMove() and captureGhosts() for each ghost
+      //* Stop player and ghost movement as evolution is ongoing
+      document.removeEventListener('keyup', handlePlayerMove)
+      clearInterval(playerTimerId)
       ghosts.forEach(ghost => {
-        if (gameGrid[ghost.currentIndex].classList.contains('Ghost-Hunter')) {
-          gameGrid[ghost.currentIndex].classList.remove('Ghost-Hunter')
-          gameGrid[ghost.currentIndex].classList.add('Ghost-Hunted')
-        }
-        //* Clear Interval to stop ghostAggroMove() and any ghostScaredMove() (from prior flashing foods)
         clearInterval(ghost.aggroMoveTimerId)
-        clearInterval(ghost.scaredMoveTimerId)
-        clearInterval(ghost.hunterTimerId)
-        ghostScaredMove(ghost)
-        captureGhosts(ghost)
       })
+
+      //*Constantly change classes while evolution is happening
+      const evolutionTimer = setInterval(() => {
+        if (gameGrid[playerPosition].classList.contains('Player-Hunted')) {
+          gameGrid[playerPosition].classList.remove('Player-Hunted')
+          gameGrid[playerPosition].classList.add('Player-Hunter')
+        } else {
+          gameGrid[playerPosition].classList.remove('Player-Hunter')
+          gameGrid[playerPosition].classList.add('Player-Hunted')
+        }
+      }, 1000)
+      
+      
+
+      
+      //* Delay class change until evolution is over
+      setTimeout(() => {
+        clearInterval(evolutionTimer)
+        //* Changing Player class from 'Player-Hunted' to 'Player-Hunter'
+        document.addEventListener('keyup', handlePlayerMove)
+        gameGrid[playerPosition].classList.remove('Player-Hunted')
+        gameGrid[playerPosition].classList.add('Player-Hunter')
+
+        //* Changing ghost class from 'Ghost-Hunter' to 'Ghost-Hunted'
+        //* For each ghost object change class to hunted and clearInterval for each timerId for ghostAggroMove(), ghostScaredMove(), captureGhosts()
+        //* Invoke the ghostScaredMove() and captureGhosts() for each ghost
+        ghosts.forEach(ghost => {
+          if (gameGrid[ghost.currentIndex].classList.contains('Ghost-Hunter')) {
+            gameGrid[ghost.currentIndex].classList.remove('Ghost-Hunter')
+            gameGrid[ghost.currentIndex].classList.add('Ghost-Hunted')
+          }
+          //* Clear Interval to stop ghostAggroMove() and any ghostScaredMove() (from prior flashing foods)
+          clearInterval(ghost.aggroMoveTimerId)
+          clearInterval(ghost.scaredMoveTimerId)
+          clearInterval(ghost.hunterTimerId)
+          ghostScaredMove(ghost)
+          captureGhosts(ghost)
+        }) 
+      }, 7000)
 
       
       
@@ -601,7 +646,7 @@ function init() {
           clearInterval(ghost.hunterTimerId)
           ghostAggroMove(ghost)
         })
-      }, 10000)
+      }, 17000)
     } else {
       return
     }
