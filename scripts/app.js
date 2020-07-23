@@ -13,6 +13,8 @@ function init() {
   const pacManLose = new Audio('./sounds/inGame/playerDeath.mp3')
   const restartGame = new Audio('./sounds/inGame/restart1.mp3')
   const monsterKill = new Audio('./sounds/inGame/ghostCapture.mp3')
+  const bgm = new Audio('./sounds/inGame/BGM1.mp3')
+  const bgmAfterTransform = new Audio('./sounds/inGame/BGMafterTransform.mp3')
   
 
 
@@ -31,6 +33,7 @@ function init() {
   //* flashFoodEaten() variables
   // let hunterTimerId = 0
   let transformTimeOutId = 0
+
 
   //* ghostAggroMove() variables
   // let gameTimerId = 0
@@ -496,6 +499,9 @@ function init() {
     ghost.gameOverTimerId = setInterval(function() {
       if (playerPosition === ghost.currentIndex && gameGrid[playerPosition].classList.contains('Ghost-Hunter')) {
         // console.log('Ghost hunter is', ghost.className)
+        //* Stop existing music and play pacman lose music
+        bgmAfterTransform.pause()
+        bgmAfterTransform.currentTime = 0
         pacManLose.play()
         clearInterval(ghost.aggroMoveTimerId)
         clearInterval(ghost.scaredMoveTimerId)
@@ -574,9 +580,13 @@ function init() {
     //* If statement to check if 'flashing-food' class exists in position the player is moving in, if true, remove 'flashing-food' class and add 5000 points
     if (gameGrid[playerPosition].classList.contains('flashing-food')) {
 
+      
+
       gameGrid[playerPosition].classList.remove('flashing-food')
 
-      //* Add evolution music as flashing food is removed
+      //* Add evolution music as flashing food is removed and stopping previous after evolution bgm
+      bgmAfterTransform.pause()
+      bgmAfterTransform.currentTime = 0
       charmander.play()
       evolution.play()
       scoreNum += 5000
@@ -601,12 +611,13 @@ function init() {
       }, 1000)
       
       
-
+      
       
       //* Delay class change until evolution is over
       setTimeout(() => {
         clearInterval(evolutionTimer)
         charizard.play()
+        bgmAfterTransform.play()
         //* Changing Player class from 'Player-Hunted' to 'Player-Hunter'
         document.addEventListener('keyup', handlePlayerMove)
         gameGrid[playerPosition].classList.remove('Player-Hunted')
@@ -657,7 +668,7 @@ function init() {
           clearInterval(ghost.hunterTimerId)
           ghostAggroMove(ghost)
         })
-      }, 17000)
+      }, 22000)
     } else {
       return
     }
