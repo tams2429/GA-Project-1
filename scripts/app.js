@@ -15,6 +15,7 @@ function init() {
   const monsterKill = new Audio('./sounds/inGame/ghostCapture.mp3')
   const bgm = new Audio('./sounds/inGame/BGM2.mp3')
   const bgmAfterTransform = new Audio('./sounds/inGame/BGMafterTransform.mp3')
+  const gameWin = new Audio('./sounds/inGame/win1.mp3')
   
 
 
@@ -423,18 +424,24 @@ function init() {
     // console.log(foodsRemaining)
     // console.log(foodsRemaining.length)
     if (foodsRemaining.length === 0) {
+      bgm.pause()
+      bgm.currentTime = 0
+      gameWin.play()
       ghosts.forEach(ghost => {
         clearInterval(ghost.aggroMoveTimerId)
         clearInterval(ghost.scaredMoveTimerId)
       })
       clearInterval(playerTimerId)
-      window.alert(`Congratulations, you won! Your score is ${scoreNum}`)
-      const restart = window.confirm('Do you wish to play again?')
-      if (restart) {
-        location.reload()
-      } else {
-        return
-      }
+      setTimeout(() => {
+        window.alert(`Congratulations, you won! Your score is ${scoreNum}`)
+        const restart = window.confirm('Do you wish to play again?')
+        if (restart) {
+          location.reload()
+        } else {
+          return
+        }
+      }, 3000)
+      
     }
   }
 
