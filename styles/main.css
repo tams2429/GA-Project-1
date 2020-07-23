@@ -36,8 +36,10 @@ body {
 /*Grid Items & Character classes*/
 
 .food {
-  background-color: brown;
-  border: 5px solid white;
+  background-image: url(../images/food.png);
+  object-fit: contain;
+  /* background-color: brown;
+  border: 5px solid white; */
 }
 
 .barrier {
@@ -45,8 +47,8 @@ body {
 }
 
 .flashing-food {
-  background-color: pink;
-  border-radius: 10px;
+  background-image: url(../images/rareCandy.png);
+  object-fit: contain;
 }
 
 .ghost-lair {
