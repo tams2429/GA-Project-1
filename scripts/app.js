@@ -40,7 +40,7 @@ function init() {
       this.aggroMoveTimerId = NaN
       this.scaredMoveTimerId = NaN
       this.hunterTimerId = NaN
-      this.gameOverTimerId =NaN
+      this.gameOverTimerId = NaN
       this.aggroMoveIterator = 0
     }
   }
@@ -65,37 +65,70 @@ function init() {
   // console.log(gridContainer)
 
   //* Define a layout array, containing a series of numbers that represent the function of the squares (i.e. 0 = food, 1 = barrier, 2 = flashing food, 3 = 'Ghost' lair, 4 = 'Player start',)
-  const layout =  [
+  const layout = [
     1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,
-    1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1,
-    1, 0, 1, 1, 1, 1, 1, 0, 1, 1, 1, 1, 1, 1, 0, 1, 1, 1, 1, 1, 1, 0, 1, 1, 1, 1, 1, 0, 1,
-    1, 0, 1, 1, 1, 1, 1, 0, 1, 1, 1, 1, 1, 1, 0, 1, 1, 1, 1, 1, 1, 0, 1, 1, 1, 1, 1, 0, 1,
-    1, 0, 1, 1, 1, 1, 1, 0, 1, 1, 1, 1, 1, 1, 0, 1, 1, 1, 1, 1, 1, 0, 1, 1, 1, 1, 1, 0, 1,
-    1, 2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2, 1,
-    1, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 1,
-    1, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 1,
-    1, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 1,
-    1, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 1,
-    1, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 1,
-    1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1,
-    1, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 1, 3, 3, 3, 1, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 1,
-    1, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 1, 3, 3, 3, 1, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 1,
-    1, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 1, 1, 1, 1, 1, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 1,
-    1, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 1,
-    1, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 1, 1, 1, 1, 1, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 1,
-    1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1,
-    1, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 1,
-    1, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 1,
-    1, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 1,
-    1, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 1,
-    1, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 1,
-    1, 2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 4, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2, 1,
-    1, 0, 1, 1, 1, 1, 1, 0, 1, 1, 1, 1, 1, 1, 0, 1, 1, 1, 1, 1, 1, 0, 1, 1, 1, 1, 1, 0, 1,
-    1, 0, 1, 1, 1, 1, 1, 0, 1, 1, 1, 1, 1, 1, 0, 1, 1, 1, 1, 1, 1, 0, 1, 1, 1, 1, 1, 0, 1,
-    1, 0, 1, 1, 1, 1, 1, 0, 1, 1, 1, 1, 1, 1, 0, 1, 1, 1, 1, 1, 1, 0, 1, 1, 1, 1, 1, 0, 1,
-    1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1,
+    1, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 1,
+    1, 2, 1, 1, 1, 1, 1, 2, 1, 1, 1, 1, 1, 1, 2, 1, 1, 1, 1, 1, 1, 2, 1, 1, 1, 1, 1, 2, 1,
+    1, 2, 1, 1, 1, 1, 1, 2, 1, 1, 1, 1, 1, 1, 2, 1, 1, 1, 1, 1, 1, 2, 1, 1, 1, 1, 1, 2, 1,
+    1, 2, 1, 1, 1, 1, 1, 2, 1, 1, 1, 1, 1, 1, 2, 1, 1, 1, 1, 1, 1, 2, 1, 1, 1, 1, 1, 2, 1,
+    1, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 1,
+    1, 2, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 2, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 2, 1,
+    1, 2, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 2, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 2, 1,
+    1, 2, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 2, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 2, 1,
+    1, 2, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 2, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 2, 1,
+    1, 2, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 2, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 2, 1,
+    1, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 1,
+    1, 2, 1, 1, 1, 1, 1, 1, 1, 1, 1, 2, 1, 1, 3, 1, 1, 2, 1, 1, 1, 1, 1, 1, 1, 1, 1, 2, 1,
+    1, 2, 1, 1, 1, 1, 1, 1, 1, 1, 1, 2, 1, 3, 3, 3, 1, 2, 1, 1, 1, 1, 1, 1, 1, 1, 1, 2, 1,
+    1, 2, 1, 1, 1, 1, 1, 1, 1, 1, 1, 2, 1, 1, 1, 1, 1, 2, 1, 1, 1, 1, 1, 1, 1, 1, 1, 2, 1,
+    1, 2, 1, 1, 1, 1, 1, 1, 1, 1, 1, 2, 2, 2, 2, 2, 2, 2, 1, 1, 1, 1, 1, 1, 1, 1, 1, 2, 1,
+    1, 2, 1, 1, 1, 1, 1, 1, 1, 1, 1, 2, 1, 1, 1, 1, 1, 2, 1, 1, 1, 1, 1, 1, 1, 1, 1, 2, 1,
+    1, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 1,
+    1, 2, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 2, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 2, 1,
+    1, 2, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 2, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 2, 1,
+    1, 2, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 2, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 2, 1,
+    1, 2, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 2, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 2, 1,
+    1, 2, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 2, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 2, 1,
+    1, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 4, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 1,
+    1, 2, 1, 1, 1, 1, 1, 2, 1, 1, 1, 1, 1, 1, 2, 1, 1, 1, 1, 1, 1, 2, 1, 1, 1, 1, 1, 2, 1,
+    1, 2, 1, 1, 1, 1, 1, 2, 1, 1, 1, 1, 1, 1, 2, 1, 1, 1, 1, 1, 1, 2, 1, 1, 1, 1, 1, 2, 1,
+    1, 2, 1, 1, 1, 1, 1, 2, 1, 1, 1, 1, 1, 1, 2, 1, 1, 1, 1, 1, 1, 2, 1, 1, 1, 1, 1, 2, 1,
+    1, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 0, 1,
     1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1
-  ]   
+  ]
+
+  
+  // [
+  //   1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,
+  //   1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1,
+  //   1, 0, 1, 1, 1, 1, 1, 0, 1, 1, 1, 1, 1, 1, 0, 1, 1, 1, 1, 1, 1, 0, 1, 1, 1, 1, 1, 0, 1,
+  //   1, 0, 1, 1, 1, 1, 1, 0, 1, 1, 1, 1, 1, 1, 0, 1, 1, 1, 1, 1, 1, 0, 1, 1, 1, 1, 1, 0, 1,
+  //   1, 0, 1, 1, 1, 1, 1, 0, 1, 1, 1, 1, 1, 1, 0, 1, 1, 1, 1, 1, 1, 0, 1, 1, 1, 1, 1, 0, 1,
+  //   1, 2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2, 1,
+  //   1, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 1,
+  //   1, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 1,
+  //   1, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 1,
+  //   1, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 1,
+  //   1, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 1,
+  //   1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1,
+  //   1, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 1, 3, 3, 3, 1, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 1,
+  //   1, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 1, 3, 3, 3, 1, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 1,
+  //   1, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 1, 1, 1, 1, 1, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 1,
+  //   1, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 1,
+  //   1, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 1, 1, 1, 1, 1, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 1,
+  //   1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1,
+  //   1, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 1,
+  //   1, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 1,
+  //   1, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 1,
+  //   1, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 1,
+  //   1, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 1,
+  //   1, 2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 4, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2, 1,
+  //   1, 0, 1, 1, 1, 1, 1, 0, 1, 1, 1, 1, 1, 1, 0, 1, 1, 1, 1, 1, 1, 0, 1, 1, 1, 1, 1, 0, 1,
+  //   1, 0, 1, 1, 1, 1, 1, 0, 1, 1, 1, 1, 1, 1, 0, 1, 1, 1, 1, 1, 1, 0, 1, 1, 1, 1, 1, 0, 1,
+  //   1, 0, 1, 1, 1, 1, 1, 0, 1, 1, 1, 1, 1, 1, 0, 1, 1, 1, 1, 1, 1, 0, 1, 1, 1, 1, 1, 0, 1,
+  //   1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1,
+  //   1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1
+  // ]   
 
 
   
@@ -159,8 +192,6 @@ function init() {
       }
     }
 
-    //* Add ghost positions here
-    //!To add other ghost positions later
 
     //* Adding ghosts to 'gameGrid'
     ghosts.forEach(ghost => {
@@ -175,21 +206,15 @@ function init() {
     // gameGrid[currentGhostPositions[0]].classList.add('Ghost-Hunter')
   }
 
-  // createGrid()
 //!-----------------------------------------------------------------------------------------
   //? Creating a function startGame() which will create the grid and call the 'ghost' movement function
   //*Game variables
-  //! StartDelay has to be longer than ghostDelay otherwise ghostMove() wont be run as setInterval() will restart ghostMove() before it performs any movement
-  //! Possibly attach startGame() to Event Listener when window.Prompt is pressed? 
-  const startDelay = 500
-  const ghostDelay = 200
-
   //! Initialise possible moves for the Ghost aggro move logic
   let possibleGhostMoves = [-1, 1, -width, width]
 
+  //! Possibly attach startGame() to Event Listener when window.Prompt is pressed? 
   function startGame() {
     createGrid()
-    // gameTimerId = setInterval(ghostMove, startDelay)
 
     //*Passing each ghost object into the ghostAggroMove() 
     ghosts.forEach(ghost => ghostAggroMove(ghost))
@@ -198,11 +223,6 @@ function init() {
     //* Passing each ghost object into the capturePlayer()
     ghosts.forEach(ghost => capturePlayer(ghost))
 
-    //! To reinstate after new function is tested
-    // gameTimerId = setInterval(ghostAggroMove, startDelay)
-    // //* Keep time delay for iterations of capturePlayer() as low as possible, to initiate game over as soon as 'Player-Hunted' hits 'Ghost-Hunter'
-    // gameOverTimerId = setInterval(capturePlayer, 10)
-    //* Add setInterval for iterations of captureGhost() as low as possible, in order to detect collisions and send 'Ghosts' back to lair 
  
 
   }
@@ -222,7 +242,7 @@ function init() {
   const playerDelay = 200
 
   //*Check current position of 'Player'
-  console.log('Currently player is in cell index', playerPosition)
+  // console.log('Currently player is in cell index', playerPosition)
   // console.log(gameGrid[playerPosition])
 
 
@@ -252,7 +272,6 @@ function init() {
                 playerPosition++
                 gameGrid[playerPosition].classList.add('Player-Hunter')
               }
-              // ghostAggroMove()
               foodsEaten()
               flashFoodEaten()
               checkWin()
@@ -282,7 +301,6 @@ function init() {
                 playerPosition--
                 gameGrid[playerPosition].classList.add('Player-Hunter')
               }
-              // ghostAggroMove()
               foodsEaten()
               flashFoodEaten()
               checkWin()
@@ -312,7 +330,6 @@ function init() {
                 playerPosition -= width
                 gameGrid[playerPosition].classList.add('Player-Hunter')
               }
-              // ghostAggroMove()
               foodsEaten()
               flashFoodEaten()
               checkWin()
@@ -342,7 +359,6 @@ function init() {
                 playerPosition += width
                 gameGrid[playerPosition].classList.add('Player-Hunter')
               }
-              // ghostAggroMove()
               foodsEaten()
               flashFoodEaten()
               checkWin()
@@ -378,7 +394,6 @@ function init() {
   // console.log(typeof(scoreNum))
 
   //* Create function to remove the food class + update score (+2000 for each food eaten), for invocation within the handlePlayerMove() function
-
   function foodsEaten() {
     if (gameGrid[playerPosition].classList.contains('food')) {
       gameGrid[playerPosition].classList.remove('food')
@@ -408,12 +423,13 @@ function init() {
     // console.log(foodsRemaining)
     // console.log(foodsRemaining.length)
     if (foodsRemaining.length === 0) {
-      clearInterval(gameTimerId)
-      clearInterval(scaredMoveTimeOutId)
+      ghosts.forEach(ghost => {
+        clearInterval(ghost.aggroMoveTimerId)
+        clearInterval(ghost.scaredMoveTimerId)
+      })
       clearInterval(playerTimerId)
-      // clearInterval(ghostTimerId)
       window.alert(`Congratulations, you won! Your score is ${scoreNum}`)
-      const restart = window.confirm('Congratulations, you won! Do you wish to play again?')
+      const restart = window.confirm('Do you wish to play again?')
       if (restart) {
         location.reload()
       } else {
@@ -426,7 +442,7 @@ function init() {
 //!----------------------------------------------------------------------------------------------
 
 
-  //?Ghost position and movement
+  //!Ghost Random Movement Functions (Not Used)
   // //* Checking the first location of div with class 'ghost-lair'
   // const ghostEntranceIndex = gameGrid.findIndex(object => {
   //   return object.className === 'ghost-lair'
@@ -499,7 +515,7 @@ function init() {
       if (playerPosition === ghost.currentIndex && gameGrid[playerPosition].classList.contains('Ghost-Hunter')) {
         // console.log('Ghost hunter is', ghost.className)
         clearInterval(ghost.aggroMoveTimerId)
-        clearInterval(ghost.scaredMoveTimeOutId)
+        clearInterval(ghost.scaredMoveTimerId)
         clearInterval(playerTimerId)
         document.removeEventListener('keyup', handlePlayerMove)
         setTimeout(() => {
@@ -512,10 +528,15 @@ function init() {
           }
         },500)
         clearInterval(ghost.gameOverTimerId)
+        clearInterval(ghost.aggroMoveTimerId)
+        clearInterval(ghost.hunterTimerId)
+        clearTimeout(transformTimeOutId)
       } else if (restart === false) {
         //* This 'Else' case is to make sure that if player doesn't click to play again, the other ghosts will also stop moving
         clearInterval(ghost.aggroMoveTimerId)
-        clearInterval(ghost.scaredMoveTimeOutId)
+        clearInterval(ghost.scaredMoveTimerId)
+        clearInterval(ghost.hunterTimerId)
+        clearTimeout(transformTimeOutId)
       }
     }, 10)
     
@@ -551,27 +572,6 @@ function init() {
 
   }
 
-  //? Backup captureGhosts()
-  // function captureGhosts() {
-  //   // console.log('The captureGhost function has been invoked')
-
-  //   if (gameGrid[playerPosition].classList.contains('Ghost-Hunted')) {
-  //     gameGrid[playerPosition].classList.remove('Ghost-Hunted')
-  //     scoreNum += 10000
-  //     score.innerHTML = scoreNum
-      
-  //     //* Send eaten Ghost back to lair & lair entrance + transform back into 'Ghost-Hunter'
-  //     gameGrid[startingGhostPositions[0]].classList.add('Ghost-Hunter')
-  //     currentGhostPositions[0] = startingGhostPositions[0]
-
-  //     //* Reset iterator for ghostAggroMove() so ghosts sent back to lair, can come out of lair again
-  //     iterator = 0
-
-  //     //* Start ghostAggroMove() when ghosts are sent back and becomes 'Ghost-Hunter' class again
-  //     gameTimerId = setInterval(ghostAggroMove, startDelay)
-  //   } 
-
-  // }
 
 
 //!----------------------------------------------------------------------------------------------
@@ -593,7 +593,8 @@ function init() {
       gameGrid[playerPosition].classList.add('Player-Hunter')
 
       //* Changing ghost class from 'Ghost-Hunter' to 'Ghost-Hunted'
-      //! For each ghost object change class to hunted and clearInterval for each timerId for ghostAggroMove() and ghostScaredMove()
+      //* For each ghost object change class to hunted and clearInterval for each timerId for ghostAggroMove(), ghostScaredMove(), captureGhosts()
+      //* Invoke the ghostScaredMove() and captureGhosts() for each ghost
       ghosts.forEach(ghost => {
         if (gameGrid[ghost.currentIndex].classList.contains('Ghost-Hunter')) {
           gameGrid[ghost.currentIndex].classList.remove('Ghost-Hunter')
@@ -612,18 +613,7 @@ function init() {
       
       
 
-      //* Start ghostScaredMove() after eating flashing food
-      //! Use forEach to invoke rather than setInterval
-      // scaredMoveTimeOutId = setInterval(ghostScaredMove, startDelay)
-
-      //* Add setInterval with captureGhost() that will detect 'if' there is collision between converted players and ghosts + add points + send ghosts back to original location
-      //! Use forEach to invoke rather than setInterval
-      // ghosts.forEach(ghost => {
-      //   console.log(ghost)
-      //   captureGhosts(ghost)
-      // })
-
-      // hunterTimerId = setInterval(captureGhosts, 100)
+      
       
 
 
@@ -634,8 +624,8 @@ function init() {
         gameGrid[playerPosition].classList.remove('Player-Hunter')
         gameGrid[playerPosition].classList.add('Player-Hunted')
 
-        //! For each ghost object, transform ghost class back from 'Ghost-Hunted' back to 'Ghost-Hunter' & 
-        //! Stop ghostScaredMove() and start interval for ghostAggroMove() again after ghosts are transformed back to 'Ghost-Hunter' class
+        //* For each ghost object, transform ghost class back from 'Ghost-Hunted' back to 'Ghost-Hunter' & 
+        //* Stop ghostScaredMove(), any pre-existing ghostAggroMove() and captureGhosts() and restart interval for ghostAggroMove() again after ghosts are transformed back to 'Ghost-Hunter' class
         ghosts.forEach(ghost => {
           if (gameGrid[ghost.currentIndex].classList.contains('Ghost-Hunted')) {
             gameGrid[ghost.currentIndex].classList.remove('Ghost-Hunted')
@@ -646,74 +636,12 @@ function init() {
           clearInterval(ghost.hunterTimerId)
           ghostAggroMove(ghost)
         })
-
-        
-        // clearInterval(gameTimerId)
-
       }, 10000)
     } else {
       return
     }
   }
 
-
-
-  //? Backup flashFoodEaten
-  // function flashFoodEaten() {
-  //   // console.log('Flash food function has been invoked')
-  //   console.log(currentGhostPositions)
-  //   //* If statement to check if 'flashing-food' class exists in position the player is moving in, if true, remove 'flashing-food' class and add 5000 points
-  //   if (gameGrid[playerPosition].classList.contains('flashing-food')) {
-
-  //     gameGrid[playerPosition].classList.remove('flashing-food')
-
-  //     //* Changing Player class from 'Player-Hunted' to 'Player-Hunter'
-  //     gameGrid[playerPosition].classList.remove('Player-Hunted')
-  //     gameGrid[playerPosition].classList.add('Player-Hunter')
-
-  //     //* Changing ghost class from 'Ghost-Hunter' to 'Ghost-Hunted'
-  //     //! Change for each ghost object
-  //     if (gameGrid[currentGhostPositions[0]].classList.contains('Ghost-Hunter')) {
-  //       gameGrid[currentGhostPositions[0]].classList.remove('Ghost-Hunter')
-  //       gameGrid[currentGhostPositions[0]].classList.add('Ghost-Hunted')
-  //     }
-
-  //     scoreNum += 5000
-  //     score.innerHTML = scoreNum
-      
-  //     //* Clear Interval to stop ghostAggroMove() and any ghostScaredMove() (from prior flashing foods)
-  //     clearInterval(gameTimerId)
-  //     clearInterval(scaredMoveTimeOutId)
-
-  //     //* Start ghostScaredMove() after eating flashing food
-  //     //! Use forEach to invoke rather than setInterval
-  //     scaredMoveTimeOutId = setInterval(ghostScaredMove, startDelay)
-
-  //     //* Add setInterval with captureGhost() that will detect 'if' there is collision between converted players and ghosts + add points + send ghosts back to original location
-  //     hunterTimerId = setInterval(captureGhosts, 10)
-
-  //     //* Add setTimeout with a logic that reverts everything back i.e. 'Ghost-Hunted' to 'Ghost-Hunter' & 'Player-Hunter' to 'Player-Hunted', within setTimout() add functionality to clear setInterval(captureGhost)
-  //     clearTimeout(transformTimeOutId)
-  //     transformTimeOutId = setTimeout(() => {
-  //       //*Transform Player class back from 'Player-Hunter' back to 'Player-Hunted'
-  //       gameGrid[playerPosition].classList.remove('Player-Hunter')
-  //       gameGrid[playerPosition].classList.add('Player-Hunted')
-
-  //       //* Transform Ghost class back from 'Ghost-Hunted' back to 'Ghost-Hunter'
-  //       if (gameGrid[currentGhostPositions[0]].classList.contains('Ghost-Hunted')) {
-  //         gameGrid[currentGhostPositions[0]].classList.remove('Ghost-Hunted')
-  //         gameGrid[currentGhostPositions[0]].classList.add('Ghost-Hunter')
-  //       }
-
-  //       //* Stop ghostScaredMove() and start interval for ghostAggroMove() again after ghosts are transformed back to 'Ghost-Hunter' class
-  //       clearInterval(scaredMoveTimeOutId)
-  //       clearInterval(gameTimerId)
-  //       gameTimerId = setInterval(ghostAggroMove, startDelay)
-  //     }, 10000)
-  //   } else {
-  //     return
-  //   }
-  // }
 
 
 
@@ -723,11 +651,11 @@ function init() {
   //? Ghost AI movements (should move closer to Player)
   //* 'playerPosition' and 'currentGhostPositions' already defined and are actively changing
   
-  //*Create function to replace ghostMove(), which will contain logic for ghosts to move closer to player
-  //! To customise 'iterator' and 'playerDummyPosition' for different ghosts 
-  //! i.e. LHS ghost, iterator <= 6, playerDummyPosition[1]
-  //! i.e. Middle ghost, iterator <= 5, playerDummyPosition[0]
-  //! i.e. RHS ghost, iterator <= 6, playerDummyPosition [0]
+  //*Create function to replace ghostMove() (i.e. random ghost movement), which will contain logic for ghosts to move closer to player
+  //* To customise 'iterator' and 'playerDummyPosition' for different ghosts 
+  //* i.e. LHS ghost, iterator <= 6, playerDummyPosition[1]
+  //* i.e. Middle ghost, iterator <= 5, playerDummyPosition[0]
+  //* i.e. RHS ghost, iterator <= 6, playerDummyPosition [0]
 
   function ghostAggroMove(ghost) {
     
@@ -764,12 +692,12 @@ function init() {
           if (Math.abs(ghost.currentIndex - playerDummyPosition) > Math.abs((ghost.currentIndex + possibleGhostMoves[i]) - playerDummyPosition)) {
             // console.log('The ghost will move by', possibleGhostMoves[i])
             // console.log('Valid moves are', possibleGhostMoves[i])
-            //*If new move reduces distance between the ghost and the target position, check if this new location has a barrier or not, if no barrier, then push this new distance into the distances array (which contains only the new reduced distances that do not encounter a barrier)
+            //*If new move reduces distance between the ghost and the target position, check if this new location has a barrier or ghosts, if no barrier or ghosts, then push this new distance into the distances array (which contains only the new reduced distances that do not encounter a barrier/ghosts)
             if (!gameGrid[ghost.currentIndex + possibleGhostMoves[i]].classList.contains('barrier') && (!gameGrid[ghost.currentIndex + possibleGhostMoves[i]].classList.contains('Ghost-Hunter') && !gameGrid[ghost.currentIndex + possibleGhostMoves[i]].classList.contains('Ghost-Hunted'))) {
               // console.log('no barrier')
               distances.push(Math.abs((ghost.currentIndex + possibleGhostMoves[i]) - playerDummyPosition))
           
-              //*For loop and if statement to check if current value of distances is less than other distance values that also reduce the distance and do not have a barrier
+              //*For loop and if statement to check if current value of distances is less than other distance values that also reduce the distance and do not have a barrier/ghosts
               for (let j = 0; j < distances.length; j++) {
                 if (distances.length === 1) {
                   // console.log('for loop run')
@@ -788,11 +716,11 @@ function init() {
           if (Math.abs(ghost.currentIndex - playerPosition) > Math.abs((ghost.currentIndex + possibleGhostMoves[i]) - playerPosition)) {
             // console.log('The ghost will move by', possibleGhostMoves[i])
             // console.log('Valid moves are', possibleGhostMoves[i])
-            //*If new move reduces distance between the ghost and the player, check if this new location has a barrier or not, if no barrier, then push this new distance into the distances array (which contains only the new reduced distances that do not encounter a barrier)
+            //*If new move reduces distance between the ghost and the player, check if this new location has a barrier or ghosts, if no barrier/ghosts, then push this new distance into the distances array (which contains only the new reduced distances that do not encounter a barrier/ghosts)
             if (!gameGrid[ghost.currentIndex + possibleGhostMoves[i]].classList.contains('barrier') && (!gameGrid[ghost.currentIndex + possibleGhostMoves[i]].classList.contains('Ghost-Hunter') && !gameGrid[ghost.currentIndex + possibleGhostMoves[i]].classList.contains('Ghost-Hunted'))) {
               distances.push(Math.abs((ghost.currentIndex + possibleGhostMoves[i]) - playerPosition))
     
-              //*For loop and if statement to check if current value of distances is less than other distance values that also reduce the distance and do not have a barrier
+              //*For loop and if statement to check if current value of distances is less than other distance values that also reduce the distance and do not have a barrier/ghosts
               for (let j = 0; j < distances.length; j++) {
                 if (distances.length === 1) {
                   // console.log('for loop run')
@@ -831,21 +759,16 @@ function init() {
       chosenMove = 0
 
       //* increase Iterator (for use to get ghosts out of lair)
-      //! Might need to reset iterator after ghosts sent back to lair?
       ghost.aggroMoveIterator++
       // console.log(iterator)
-    }, ghost.speed)
-
-    // const playerDummyPosition = playerDummyPositions[0]
-
-    
+    }, ghost.speed) 
   }
 
 
 
 
   //* function ghostScaredMove created to apply logic to ghost movement when they are being hunted by player
-  //* Invoked within a setInterval() within the flashFoodEaten()
+  //* Invoked within the flashFoodEaten()
   //* Will direct hunted ghost to move back towards a corner of the ghost lair, once reached, the homing position, will change to another corner of the ghost lair, by cycling through the 'playerDummyPositions' array
   function ghostScaredMove(ghost) {
     // console.log('This is the ghostScaredMove function')
@@ -861,7 +784,7 @@ function init() {
             if (!gameGrid[ghost.currentIndex + possibleGhostMoves[i]].classList.contains('barrier') && (!gameGrid[ghost.currentIndex + possibleGhostMoves[i]].classList.contains('Ghost-Hunter') && !gameGrid[ghost.currentIndex + possibleGhostMoves[i]].classList.contains('Ghost-Hunted'))) {
               distances.push(Math.abs((ghost.currentIndex + possibleGhostMoves[i]) - playerHomingPosition))
 
-              //*For loop and if statement to check if current value of distances is less than other distance values that also reduce the distance and do not have a barrier
+              //*For loop and if statement to check if current value of distances is less than other distance values that also reduce the distance and do not have a barrier/ghosts
               for (let j = 0; j < distances.length; j++) {
                 if (distances.length === 1) {
                   // console.log('for loop run')
@@ -890,9 +813,6 @@ function init() {
         // console.log('The ghost classname is', ghost.className)
         // console.log('The ghost index is', ghost.currentIndex)
       }
-      // gameGrid[ghost.currentIndex].classList.remove('Ghost-Hunted')
-      // ghost.currentIndex += chosenMove
-      // gameGrid[ghost.currentIndex].classList.add('Ghost-Hunted')
 
       //* reset 'distances' array
       distances = []
@@ -905,58 +825,6 @@ function init() {
 
   }
 
-  //? Back up ghostScaredMove () 
-  // function ghostScaredMove() {
-  //   // console.log('This is the ghostScaredMove function')
-
-  //   //* if current ghost position is not at the corner of the ghost lair, move towards it
-  //   if (currentGhostPositions[0] !== playerHomingPosition) {
-  //     for (let i = 0; i < possibleGhostMoves.length; i++) {
-  //       if (Math.abs(currentGhostPositions[0] - playerHomingPosition) > Math.abs((currentGhostPositions[0] + possibleGhostMoves[i]) - playerHomingPosition)) {
-  //         // console.log('The ghost will move by', possibleGhostMoves[i])
-  //         // console.log('Valid moves are', possibleGhostMoves[i])
-  //         //*If new move reduces distance between the ghost and the homing position, check if this new location has a barrier or not, if no barrier, then push this new distance into the distances array (which contains only the new reduced distances that do not encounter a barrier)
-  //         if (!gameGrid[currentGhostPositions[0] + possibleGhostMoves[i]].classList.contains('barrier')) {
-  //           distances.push(Math.abs((currentGhostPositions[0] + possibleGhostMoves[i]) - playerHomingPosition))
-  
-  //           //*For loop and if statement to check if current value of distances is less than other distance values that also reduce the distance and do not have a barrier
-  //           for (let j = 0; j < distances.length; j++) {
-  //             if (distances.length === 1) {
-  //               // console.log('for loop run')
-  //               chosenMove = possibleGhostMoves[i]
-  //             } else if (distances[j] < distances [j - 1] ) {
-  //               chosenMove = possibleGhostMoves[i]
-  //             }
-  //           }
-  //         }
-  //       }
-  //     }
-
-  //     //* If ghost at corner of the ghost lair, then change the homing position to another corner of the ghost lair
-  //   } else {
-  //     playerHomingPosition = playerDummyPositions[scaredMoveIterator % 4]
-  //   }
-
-  //   //* Once chosenMove has been defined, apply the move
-  //   //* Apply only if the ghost has class 'Ghost-Hunted'
-  //   if (gameGrid[currentGhostPositions[0]].classList.contains('Ghost-Hunted')) {
-  //     gameGrid[currentGhostPositions[0]].classList.remove('Ghost-Hunted')
-  //     currentGhostPositions[0] += chosenMove
-  //     gameGrid[currentGhostPositions[0]].classList.add('Ghost-Hunted')
-  //   }
-  //   // gameGrid[currentGhostPositions[0]].classList.remove('Ghost-Hunted')
-  //   // currentGhostPositions[0] += chosenMove
-  //   // gameGrid[currentGhostPositions[0]].classList.add('Ghost-Hunted')
-
-  //   //* reset 'distances' array
-  //   distances = []
-  //   //* reset 'chosenMove' 
-  //   chosenMove = 0
-
-  //   scaredMoveIterator++
-
-
-  // }
 
 
 
