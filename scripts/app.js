@@ -13,7 +13,7 @@ function init() {
   const pacManLose = new Audio('./sounds/inGame/playerDeath.mp3')
   const restartGame = new Audio('./sounds/inGame/restart1.mp3')
   const monsterKill = new Audio('./sounds/inGame/ghostCapture.mp3')
-  const bgm = new Audio('./sounds/inGame/BGM1.mp3')
+  const bgm = new Audio('./sounds/inGame/BGM2.mp3')
   const bgmAfterTransform = new Audio('./sounds/inGame/BGMafterTransform.mp3')
   
 
@@ -183,6 +183,7 @@ function init() {
       gameGrid[ghost.currentIndex].classList.add(ghost.className)
     })
 
+    
     //* Check both unique ghost classname and 'Ghost-Hunter' classes have been added to the grid
     // ghosts.forEach(ghost => {
     //   console.log(gameGrid[ghost.currentIndex])
@@ -191,14 +192,17 @@ function init() {
   }
 
 //!-----------------------------------------------------------------------------------------
-  //? Creating a function startGame() which will create the grid and call the 'ghost' movement function
+  //? Creating a function handleStartGame() which will create the grid and call the 'ghost' movement function
   //*Game variables
   //! Initialise possible moves for the Ghost aggro move logic
   let possibleGhostMoves = [-1, 1, -width, width]
 
   //! Possibly attach startGame() to Event Listener when window.Prompt is pressed? 
-  function startGame() {
+  function handleStartGame() {
     createGrid()
+
+    //*Start playing BGM with player first key press
+    // bgm.play()
 
     //*Passing each ghost object into the ghostAggroMove() 
     ghosts.forEach(ghost => ghostAggroMove(ghost))
@@ -211,7 +215,18 @@ function init() {
 
   }
 
-  startGame()
+  // const dummyBtn = document.querySelector('button')
+  // dummyBtn.addEventListener('click', handleStartGame)
+  handleStartGame()
+
+
+  //? Created an event Listener function, handleBgm(), that will only play once after the 1st key is pressed
+  function handleBgm() {
+    bgm.play()
+  }
+
+  document.addEventListener('keyup', handleBgm, { once: true })
+  
 
 
 
@@ -490,6 +505,11 @@ function init() {
 
 //!--------------------------------------------------------------------------------------------
 
+  // function handleRestart() {
+  //   if (restart)
+  // }
+
+
   //? Function to check whether Ghosts have captured Player
 
   function capturePlayer(ghost) {
@@ -502,6 +522,8 @@ function init() {
         //* Stop existing music and play pacman lose music
         bgmAfterTransform.pause()
         bgmAfterTransform.currentTime = 0
+        bgm.pause()
+        bgm.currentTime = 0
         pacManLose.play()
         clearInterval(ghost.aggroMoveTimerId)
         clearInterval(ghost.scaredMoveTimerId)
@@ -585,6 +607,8 @@ function init() {
       gameGrid[playerPosition].classList.remove('flashing-food')
 
       //* Add evolution music as flashing food is removed and stopping previous after evolution bgm
+      bgm.pause()
+      bgm.currentTime = 0
       bgmAfterTransform.pause()
       bgmAfterTransform.currentTime = 0
       charmander.play()
@@ -668,6 +692,8 @@ function init() {
           clearInterval(ghost.hunterTimerId)
           ghostAggroMove(ghost)
         })
+        //* replay normal BGM after evolution has worn off
+        bgm.play()
       }, 22000)
     } else {
       return
