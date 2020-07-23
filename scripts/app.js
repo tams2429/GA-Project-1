@@ -10,6 +10,9 @@ function init() {
   const blastoise = new Audio('./sounds/characters/blastoise.mp3')
   const venusaur = new Audio('./sounds/characters/venusaur.mp3')
   const gastly = new Audio('./sounds/characters/gastly.mp3')
+  const pacManLose = new Audio('./sounds/inGame/playerDeath.mp3')
+  const restartGame = new Audio('./sounds/inGame/restart1.mp3')
+  const monsterKill = new Audio('./sounds/inGame/ghostCapture.mp3')
   
 
 
@@ -493,6 +496,7 @@ function init() {
     ghost.gameOverTimerId = setInterval(function() {
       if (playerPosition === ghost.currentIndex && gameGrid[playerPosition].classList.contains('Ghost-Hunter')) {
         // console.log('Ghost hunter is', ghost.className)
+        pacManLose.play()
         clearInterval(ghost.aggroMoveTimerId)
         clearInterval(ghost.scaredMoveTimerId)
         clearInterval(playerTimerId)
@@ -501,7 +505,10 @@ function init() {
           window.alert(`Game Over! your score is ${scoreNum}`)
           restart = window.confirm('Do you wish to play again?')
           if (restart) {
-            location.reload()
+            restartGame.play()
+            setTimeout(() => {
+              location.reload()
+            }, 3000)
           } else {
             return
           }
@@ -529,6 +536,8 @@ function init() {
     ghost.hunterTimerId = setInterval(function() {
       if (ghost.currentIndex === playerPosition) {
         // console.log('Ghost being sent back is', ghost.className)
+        gastly.play()
+        monsterKill.play()
         gameGrid[playerPosition].classList.remove('Ghost-Hunted')
         gameGrid[playerPosition].classList.remove(ghost.className)
         scoreNum += 10000
@@ -568,6 +577,7 @@ function init() {
       gameGrid[playerPosition].classList.remove('flashing-food')
 
       //* Add evolution music as flashing food is removed
+      charmander.play()
       evolution.play()
       scoreNum += 5000
       score.innerHTML = scoreNum
@@ -596,6 +606,7 @@ function init() {
       //* Delay class change until evolution is over
       setTimeout(() => {
         clearInterval(evolutionTimer)
+        charizard.play()
         //* Changing Player class from 'Player-Hunted' to 'Player-Hunter'
         document.addEventListener('keyup', handlePlayerMove)
         gameGrid[playerPosition].classList.remove('Player-Hunted')
