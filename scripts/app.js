@@ -16,7 +16,7 @@ function init() {
   const bgm = new Audio('./sounds/inGame/BGM2.mp3')
   const bgmAfterTransform = new Audio('./sounds/inGame/BGMafterTransform.mp3')
   const gameWin = new Audio('./sounds/inGame/win1.mp3')
-  
+
 
 
   // console.log('This page has finished loading and JS is hooked')
@@ -229,6 +229,15 @@ function init() {
   document.addEventListener('keyup', handleBgm, { once: true })
   
 
+
+  //? Created an event Listener function, handleOpening(), that will only play once after the mouse is clicked
+  const video = document.querySelector('video')
+
+  function handleOpening() {
+    video.play()
+  }
+
+  document.addEventListener('click', handleOpening, { once: true })
 
 
 
@@ -896,3 +905,5 @@ function init() {
 }
 
 window.addEventListener('DOMContentLoaded', init)
+
+

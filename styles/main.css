@@ -18,6 +18,13 @@ body {
   width: 100vh;
 }
 
+.video-and-grid-wrapper {
+  display: flex;
+}
+
+
+
+
 .grid-container {
   display: flex;
   flex-direction: row;
@@ -32,6 +39,20 @@ body {
   width: 20px;
   height: 20px;
 }
+
+.scores-container {
+  display: flex;
+  justify-content: space-evenly;
+  width: 80%;
+}
+
+
+
+
+
+
+
+
 
 /*Grid Items & Character classes*/
 
