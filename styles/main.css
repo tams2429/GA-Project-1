@@ -8,6 +8,7 @@ body {
   height: 100vh;
   display: flex;
   justify-content: center;
+  
 }
 
 .wrapper {
@@ -115,7 +116,14 @@ video {
   display: flex;
   justify-content: space-evenly;
   width: 80%;
+  font-family: 'Press Start 2P', cursive;
 }
+
+.scores-container h2 {
+  font-size: 22px;
+}
+
+
 
 
 
