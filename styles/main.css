@@ -18,6 +18,35 @@ body {
   width: 100vw;
 }
 
+.title {
+  display: flex;
+}
+
+.pacmanTitle {
+  /* opacity: 0; */
+  animation: zoomInDown;
+  animation-duration: 2s;
+  animation-iteration-count: 1;
+  animation-fill-mode: backwards;
+}
+
+.pokemonTitle {
+  /* opacity: 0; */
+  animation: zoomInDown;
+  animation-duration: 2.4s;
+  animation-iteration-count: 1;
+  animation-fill-mode: backwards;
+}
+
+h1 {
+  /* opacity: 0; */
+  animation: zoomInDown;
+  animation-duration: 2.2s;
+  animation-iteration-count: 1;
+  animation-fill-mode: backwards;
+}
+
+
 .video-and-grid-wrapper {
   display: flex;
   height: 100%;
@@ -28,6 +57,9 @@ body {
 
 video {
   position: absolute;
+  visibility: visible;
+  top: 160px;
+  
 }
 
 .pokemon {
@@ -47,10 +79,19 @@ video {
   display: flex;
   align-items: center;
   justify-content: space-around;
+  visibility: hidden;
+}
+
+.pokemon div:hover {
+  animation: wobble;
+  animation-duration: 1.3s;
+  animation-iteration-count: 1;
 }
 
 .pokemon div img {
   text-align: center;
+  opacity: 0.2;
+
 }
 
 
@@ -59,9 +100,9 @@ video {
   flex-direction: row;
   flex-wrap: wrap;
   border: 2px solid black;
+  border-radius: 10px;
   width: 584px;
   height: 584px;
-  margin-top: 10%;
   /* opacity: 0; */
 }
 

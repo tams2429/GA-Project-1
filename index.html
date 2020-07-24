@@ -4,22 +4,24 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>GA PacMan</title>
+  <link
+  rel="stylesheet"
+  href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.0.0/animate.min.css"/>
   <script src="scripts/app.js"></script>
   <link rel="stylesheet" href="styles/main.css">
 </head>
 <body>
   <div class="wrapper">
+    <div class="title">
+      <img class="pacmanTitle animate_animated animate_zoomInDown"src="./images/pacmanTitle.png" alt="Title of Pacman game">
+      <h1 class="feat animate_animated animate_zoomInDown">Feat</h1>
+      <img class="pokemonTitle animate_animated animate_zoomInDown" src="./images/pokemonTitle.png" alt="Title of Pokemon brand">
+    </div>
     <div class="video-and-grid-wrapper">
-      <!-- <video width="600" height="600" src="./videos/POKEMON RED INTRO.mp4" ></video> -->
+      <video width="400"  src="./videos/OpeningVid.mp4" ></video>
       <div class="pokemon">
-        <div class="bulbasaur" id="bulbasaur" >
-          <img src="./images/bulbasaurLarge.png" alt="Image of Bulbasaur">
-        </div>
-        <div class="charmander" id="charmander">
+        <div class="charmander animate_animated animate_wobble" id="charmander">
           <img src="./images/charmanderLarge.png" alt="Image of Charmander">
-        </div>
-        <div class="squirtle" id="squirtle">
-          <img src="./images/squirtleLarge.png" alt="Image of Squirtle">
         </div>
       </div>
       <div class="grid-container"></div>
@@ -29,7 +31,6 @@
       <h2>High Score: <span id="score-value">0</span></h2>
     </div>
     
-    <button>click me</button>
   </div>
 </body>
 </html>

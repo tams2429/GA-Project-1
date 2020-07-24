@@ -17,6 +17,8 @@ function init() {
   const bgmAfterTransform = new Audio('./sounds/inGame/BGMafterTransform.mp3')
   const gameWin = new Audio('./sounds/inGame/win1.mp3')
 
+  const pokeballOpen = new Audio('./sounds/inGame/gameStart1.mp3')
+
 
 
   // console.log('This page has finished loading and JS is hooked')
@@ -218,7 +220,7 @@ function init() {
 
   // const dummyBtn = document.querySelector('button')
   // dummyBtn.addEventListener('click', handleStartGame)
-  handleStartGame()
+  // handleStartGame()
 
 
   //? Created an event Listener function, handleBgm(), that will only play once after the 1st key is pressed
@@ -230,17 +232,71 @@ function init() {
   
 
 
+  //! Animations and JS functions leading up to game start
+
+  //? Pokeball with pokemon sounds and appearance on hover
+  //* Elements
+  const pokeball = document.querySelector('.animate_animated')
+  // console.log(pokeballs)
+  const pokemon = document.querySelector('.animate_animated>img')
+  // console.log(pokemons)
+
+
+
+  //*Function attached to event listener
+  function handlePokemonChoice(e) {
+    // console.log(e.target.classList)
+    // console.log(e.target)
+    //* For each pokeball add a wobble side and pokemon cry
+    if (e.target.classList.contains('charmander')){
+      pokeballOpen.play()
+      charmander.play()
+      pokemon.style.opacity = '1'
+    } 
+
+    setTimeout(() => {
+      pokeball.style.visibility = 'hidden'
+      video.pause()
+      video.currentTime = 0
+      handleStartGame()
+    }, 3000)
+  }
+
+
+
+  //*Event listener
+
+  pokeball.addEventListener('click', handlePokemonChoice)
+  
+
+
+
+
+
+
+
+
   //? Created an event Listener function, handleOpening(), that will only play once after the mouse is clicked
   const video = document.querySelector('video')
 
+  //* Handle title animation styles in function?
+
   function handleOpening() {
     video.play()
+    
+    //* Set a timeout delay in line with when video ends, and change opacity from 0 to 1
+    setTimeout(() => {
+      video.style.visibility = 'hidden'
+      pokeball.style.visibility = 'visible'
+    }, 23000)
   }
 
   document.addEventListener('click', handleOpening, { once: true })
 
 
 
+
+ 
 
 //!-----------------------------------------------------------------------------------------
 
