@@ -15,14 +15,43 @@ body {
   flex-direction: column;
   align-items: center;
   height: 100vh;
-  width: 100vh;
+  width: 100vw;
 }
 
 .video-and-grid-wrapper {
   display: flex;
+  height: 100%;
+  width: 100%;
+  justify-content: center;
+  align-items: center;
 }
 
+video {
+  position: absolute;
+}
 
+.pokemon {
+  position: absolute;
+  display: flex;
+  align-items: center;
+  justify-content: space-around;
+  width: 80%;
+  height: 500px;
+}
+
+.pokemon div {
+  background-image: url(../images/pokeball.png);
+  background-repeat: no-repeat;
+  height: 250px;
+  width: 250px;
+  display: flex;
+  align-items: center;
+  justify-content: space-around;
+}
+
+.pokemon div img {
+  text-align: center;
+}
 
 
 .grid-container {
@@ -33,6 +62,7 @@ body {
   width: 584px;
   height: 584px;
   margin-top: 10%;
+  /* opacity: 0; */
 }
 
 .grid-container div {
