@@ -1,7 +1,7 @@
 function init() {
 
   //* Audio files
-  const eating = new Audio('./sounds/inGame/eating3.mp3')
+  const eating = new Audio('./sounds/inGame/eating1.mp3')
   const evolution = new Audio('./sounds/inGame/evolution1.mp3')
   const charmander = new Audio('./sounds/characters/charmander.mp3')
   const squirtle = new Audio('./sounds/characters/squirtle.mp3')
