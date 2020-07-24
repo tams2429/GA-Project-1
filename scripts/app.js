@@ -236,9 +236,9 @@ function init() {
 
   //? Pokeball with pokemon sounds and appearance on hover
   //* Elements
-  const pokeball = document.querySelector('.animate_animated')
+  const pokeball = document.querySelector('.pokeball')
   // console.log(pokeballs)
-  const pokemon = document.querySelector('.animate_animated>img')
+  const pokemon = document.querySelector('.pokeball>img')
   // console.log(pokemons)
 
 
@@ -277,15 +277,37 @@ function init() {
 
 
   //? Created an event Listener function, handleOpening(), that will only play once after the mouse is clicked
+  //? This handles the title animation styles and the opening video
   const video = document.querySelector('video')
+  const pacmanTitle = document.querySelector('.pacmanTitle')
+  const feat = document.querySelector('h1')
+  const pokemonTitle = document.querySelector('.pokemonTitle')
 
-  //* Handle title animation styles in function?
 
   function handleOpening() {
     video.play()
     
-    //* Set a timeout delay in line with when video ends, and change opacity from 0 to 1
+    //* Set a timeout delay in line with when video ends, and change opacity of titles from 0 to 1 and toggle visibility so that the video stops showing when pokeball comes out
     setTimeout(() => {
+      pacmanTitle.style.opacity = '1'
+      pacmanTitle.style.animation = 'zoomInDown'
+      pacmanTitle.style.animationDuration = '2s'
+      pacmanTitle.style.animationIterationCount = '1'
+      pacmanTitle.style.animationFillMode = 'backwards'
+      feat.style.opacity = '1'
+      feat.style.animation = 'zoomInDown'
+      feat.style.animationDuration = '2.2s'
+      feat.style.animationIterationCount = '1'
+      feat.style.animationFillMode = 'backwards'
+      pokemonTitle.style.opacity = '1'
+      pokemonTitle.style.animation = 'zoomInDown'
+      pokemonTitle.style.animationDuration = '2.4s'
+      pokemonTitle.style.animationIterationCount = '1'
+      pokemonTitle.style.animationFillMode = 'backwards'
+
+
+
+
       video.style.visibility = 'hidden'
       pokeball.style.visibility = 'visible'
     }, 23000)

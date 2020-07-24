@@ -23,27 +23,27 @@ body {
 }
 
 .pacmanTitle {
-  /* opacity: 0; */
-  animation: zoomInDown;
+  opacity: 0;
+  /* animation: zoomInDown;
   animation-duration: 2s;
   animation-iteration-count: 1;
-  animation-fill-mode: backwards;
+  animation-fill-mode: backwards; */
 }
 
 .pokemonTitle {
-  /* opacity: 0; */
-  animation: zoomInDown;
+  opacity: 0;
+  /* animation: zoomInDown;
   animation-duration: 2.4s;
   animation-iteration-count: 1;
-  animation-fill-mode: backwards;
+  animation-fill-mode: backwards; */
 }
 
 h1 {
-  /* opacity: 0; */
-  animation: zoomInDown;
+  opacity: 0;
+  /* animation: zoomInDown;
   animation-duration: 2.2s;
   animation-iteration-count: 1;
-  animation-fill-mode: backwards;
+  animation-fill-mode: backwards; */
 }
 
 
