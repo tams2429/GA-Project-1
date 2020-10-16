@@ -1,5 +1,6 @@
 # GA Project 1: Poké Pac-Man 🎮
 <img src="./ReadmeResources/pokemon.gif" width="100" height="75" />
+<h1> GA Project 1: Poké Pac-Man 🎮  <img src="./ReadmeResources/pokemon.gif" width="100" height="75" /> </h1>
 
 ## Table of Contents 📖
 
