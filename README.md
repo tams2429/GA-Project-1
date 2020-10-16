@@ -1,4 +1,4 @@
-![pokemon gif](http://clipart-library.com/clipart/8TEbqnaec.htm)
+![pokemon gif](http://clipart-library.com/clipart/8TEbqnaec.htm;)
 # GA Project 1: Poké Pac-Man 🎮
 
 ## Table of Contents 📖
