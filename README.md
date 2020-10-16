@@ -1,4 +1,5 @@
-![pokemon gif](/ReadmeResources/pokemon.gif)
+<img src="./ReadmeResources/pokemon.gif" width="100" height="75" />
+
 # GA Project 1: Poké Pac-Man 🎮
 
 ## Table of Contents 📖
